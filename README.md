@@ -6,16 +6,16 @@ xhairgen is a crosshair generator and a case opener for Counter-Strike 2. It is 
 
 1. Create an empty public repository on GitHub. Do not add a README, a license or a `.gitignore` file.
 2. Open a terminal in this folder.
-3. Connect the folder to the repository and push the `main` branch:
+3. Connect the folder to the repository and push the `master` branch:
 
    ```sh
    git remote add origin https://github.com/USERNAME/REPOSITORY.git
-   git push -u origin main
+   git push -u origin master
    ```
 
 4. On GitHub, open **Settings → Pages** in the repository.
 5. Below **Build and deployment**, set **Source** to **Deploy from a branch**.
-6. Select the `main` branch and the `/ (root)` folder.
+6. Select the `master` branch and the `/ (root)` folder.
 7. Select **Save**.
 8. Wait approximately one minute. Then open `https://USERNAME.github.io/REPOSITORY/`.
 
