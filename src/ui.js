@@ -70,11 +70,13 @@ export function notice(text) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => e.classList.remove('visible'), 2600);
 }
 export const modal = () => $('#dialog');
-export function dialog(kicker, title, body, actions = '', wide = false) {
+export function dialog(kicker, title, body, actions = '', wide = false, sides = null) {
   const d = modal();
-  d.classList.toggle('wide', wide);
-  d.innerHTML = `<header class="dialog-header"><div>${kicker ? `<p class="eyebrow">${kicker}</p>` : ''}<h2 id="dialog-title">${title}</h2></div><button class="icon-btn" data-close aria-label="Close dialog">${icon('close')}</button></header><div class="dialog-body">${body}</div>${actions ? `<footer class="dialog-actions">${actions}</footer>` : ''}`;
+  const main = `<header class="dialog-header"><div>${kicker ? `<p class="eyebrow">${kicker}</p>` : ''}<h2 id="dialog-title">${title}</h2></div><button class="icon-btn" data-close aria-label="Close dialog">${icon('close')}</button></header><div class="dialog-body">${body}</div>${actions ? `<footer class="dialog-actions">${actions}</footer>` : ''}`;
+  d.className = `modal${wide ? ' wide' : ''}${sides ? ' trio' : ''}`;
+  d.innerHTML = sides ? `<aside class="side-panel">${sides[0]}</aside><div class="main-panel">${main}</div><aside class="side-panel">${sides[1]}</aside>` : main;
   if (!d.open) d.showModal();
+  d.tabIndex = -1; d.focus({ preventScroll: true });
   return d;
 }
 export async function copyText(text, message = 'Crosshair code copied') {

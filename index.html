@@ -9,7 +9,6 @@
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/fonts/saira-condensed-medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./hud.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -24,9 +23,7 @@
       <a href="#case" data-page="case">Case</a>
       <button type="button" id="inventory"><i data-icon="inventory" data-size="20" class="inventory-ico"></i><span class="inventory-word">Inventory</span><span class="counter" id="inventory-count">00</span></button>
     </nav>
-    <div class="util util-end">
-      <button type="button" class="util-btn rail-open" id="rail-open" aria-expanded="false" aria-controls="rail" aria-label="Inventory"><i data-icon="user" data-size="24"></i></button>
-    </div>
+    <div class="util"></div>
   </header>
   <main class="shell" id="main" tabindex="-1">
     <noscript><p class="noscript">Enable JavaScript to edit crosshairs and open cases.</p></noscript>
@@ -47,19 +44,10 @@
           <div class="preview">
             <div class="viewport" id="viewport">
               <img id="map-image" class="map-image" src="./assets/maps/dust2.webp" alt="Dust II crosshair preview" fetchpriority="high">
-              <div class="view-shade"></div>
               <button type="button" id="fire-area" class="fire-area" aria-label="Test fire preview; hold the mouse, Space, or Enter"></button>
               <svg id="aim" class="aim" width="2" height="2" viewBox="-1 -1 2 2" aria-hidden="true"></svg>
             </div>
             <div class="view-ui">
-              <div class="view-top">
-                <p class="view-chip" id="map-name">Dust II</p>
-                <div class="view-tools">
-                  <div class="zoom" role="group" aria-label="Preview magnification"><button type="button" data-zoom="1" aria-pressed="true">1×</button><button type="button" data-zoom="2" aria-pressed="false">2×</button><button type="button" data-zoom="4" aria-pressed="false">4×</button></div>
-                  <button type="button" class="view-btn" id="hud-ref">REF / 1080P</button>
-                  <button type="button" class="view-btn" id="hud-toggle">HUD Preview</button>
-                </div>
-              </div>
               <button type="button" class="view-arrow prev" id="prev-map" aria-label="Previous map"><i data-icon="left" data-size="30"></i></button>
               <button type="button" class="view-arrow next" id="next-map" aria-label="Next map"><i data-icon="right" data-size="30"></i></button>
               <div class="view-bottom">
@@ -89,9 +77,8 @@
     <section id="case-page" class="page case-page" aria-labelledby="case-title" hidden>
       <h1 class="sr-only" id="case-title">Series 1 Case</h1>
       <div class="case-runway">
-        <div class="case-stage" id="case-stage" data-phase="idle">
-          <div class="stage-art"><svg class="crate" viewBox="0 0 512 350" fill="none" role="img" aria-label="Series 1 Case"><use href="./assets/case.svg#crate-body"/><use class="lid" href="./assets/case.svg#crate-lid"/></svg></div>
-          <div class="reel" id="reel" aria-hidden="true" hidden><div class="reel-layer"><div class="reel-track"></div></div><div class="needle"></div></div>
+        <div class="case-stage" id="case-stage">
+          <div class="reel" id="reel" aria-hidden="true"><div class="reel-layer"><div class="reel-track"></div></div><div class="needle"></div></div>
           <div class="reward" id="reward" aria-live="polite" hidden></div>
         </div>
         <div class="opening-controls"><strong class="case-name">Series 1 Case</strong><div id="case-actions"></div></div>
@@ -99,27 +86,6 @@
       </div>
     </section>
   </main>
-
-  <div class="scrim" id="rail-scrim" hidden></div>
-  <aside class="rail" id="rail" aria-label="Inventory and recent drops">
-    <div class="rail-head">
-      <button type="button" class="rail-row" id="rail-toggle" aria-expanded="false" aria-controls="rail-panel"><span class="rail-ico"><i data-icon="user" data-size="24"></i></span><span class="rail-label">Inventory</span></button>
-      <button type="button" class="rail-act" id="rail-all" aria-label="Open full inventory" hidden><i data-icon="grid" data-size="19"></i></button>
-      <button type="button" class="rail-act rail-close" id="rail-close" aria-label="Close panel" hidden><i data-icon="close" data-size="19"></i></button>
-    </div>
-    <div class="rail-panel" id="rail-panel">
-      <div class="rail-secs">
-        <section class="rail-sec">
-          <h3><button type="button" class="rail-row" data-rail-sec="recent" aria-expanded="false" aria-controls="rail-recent"><span class="rail-ico"><i data-icon="history" data-size="26"></i><b id="rail-recent-count">0</b></span><span class="rail-label">Recent Drops</span></button></h3>
-          <div class="rail-body" id="rail-recent" hidden></div>
-        </section>
-        <section class="rail-sec">
-          <h3><button type="button" class="rail-row" data-rail-sec="collection" aria-expanded="false" aria-controls="rail-collection"><span class="rail-ico"><i data-icon="inventory" data-size="26"></i><b id="rail-collection-count">0</b></span><span class="rail-label">Collection</span></button></h3>
-          <div class="rail-body" id="rail-collection" hidden></div>
-        </section>
-      </div>
-    </div>
-  </aside>
 
   <dialog id="dialog" class="modal" aria-labelledby="dialog-title"></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

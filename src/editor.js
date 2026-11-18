@@ -2,7 +2,6 @@ import { DEFAULT, EXTRA_DEFAULT, GROUPS, MAPS, bounded, clamp, colorChannels, co
 import { randomCrosshair } from './collection.js';
 import { reticle } from './reticle.js';
 import { pickColor } from './color.js';
-import { mapImageSource } from './map-image.js';
 import { $, $$, activeSection, copyText, dialog, icon, load, notice, reduced, scrollToSection, store, tone } from './ui.js';
 
 const num = (value, step) => step === 1 ? String(value) : value.toFixed(2);
@@ -13,12 +12,12 @@ export function initEditor() {
   const saved = load('profile', {}), prefs = load('preview', {});
   let core = { ...DEFAULT }, extra = restoreExtras(saved?.extra);
   if (typeof saved?.code === 'string') { try { core = decode(saved.code); } catch { } }
-  let group = FIRST, mapIndex = MAPS.findIndex(([m]) => m === prefs?.map), zoom = [1, 2, 4].includes(prefs?.zoom) ? prefs.zoom : 1;
+  let group = FIRST, mapIndex = MAPS.findIndex(([m]) => m === prefs?.map);
   if (mapIndex < 0) mapIndex = 0;
   let active = true, moving = false, firing = false, startFire = 0, endFire = -Infinity, frame = 0, pendingSave = 0;
-  let sight = 'primary', gesture = null, query = '', hold = 0, spyFrame = 0;
+  let gesture = null, query = '', hold = 0, spyFrame = 0;
   const history = [], scroller = $('#settings-scroll'), settings = $('#settings'), aim = $('#aim'), fireArea = $('#fire-area');
-  const searchBtn = $('#search-toggle'), searchBox = $('#settings-search'), setMapSource = mapImageSource($('#map-image'));
+  const searchBtn = $('#search-toggle'), searchBox = $('#settings-search');
   function remember() {
     history.push([{ ...core }, { ...extra }]); if (history.length > 40) history.shift();
     $('#undo').disabled = false;
@@ -33,21 +32,14 @@ export function initEditor() {
     const still = reduced(), elapsed = Math.max(0, t - startFire);
     const shot = firing ? (still ? 0.8 : 0.55 + 0.45 * Math.exp(-(elapsed % 135) / 65)) : still ? 0 : clamp(1 - (t - endFire) / 210, 0, 1);
     const motion = moving ? (still ? 0.7 : 0.62 + 0.25 * Math.sin(t / 390)) : 0;
-    const dx = core.followRecoil && shot && !still && sight === 'primary' ? Math.sin(elapsed / 150) * 5 * shot : 0;
-    const dy = core.followRecoil && shot && !still && sight === 'primary' ? -shot * 14 : 0;
-    const ink = hex([core.red, core.green, core.blue]);
-    if (sight === 'primary') aim.innerHTML = reticle(core, motion, shot);
-    else if (sight === 'scope') aim.innerHTML = `<circle r="${2.6 * core.scopeDotScale}" fill="${core.scopeDotUseCrosshairColor ? ink : '#ed4744'}"/>`;
-    else {
-      const gap = extra.sniperInaccuracy ? Math.round((motion + shot) * 7) : 0;
-      aim.innerHTML = `<path d="M-180 0H${-gap}M${gap} 0H180M0 -180V${-gap}M0 ${gap}V180" stroke="#161719" stroke-width="${extra.sniperWidth}"/>`;
-    }
-    aim.style.transform = `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(${zoom})`;
+    const dx = core.followRecoil && shot && !still ? Math.sin(elapsed / 150) * 5 * shot : 0;
+    const dy = core.followRecoil && shot && !still ? -shot * 14 : 0;
+    aim.innerHTML = reticle(core, motion, shot);
+    aim.style.transform = `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
     if (!still && !document.hidden && (moving || firing || shot > 0)) frame = requestAnimationFrame(preview);
   }
   function refreshCode() {
-    $('#share-code').value = encode(core); $('#hud-ref').textContent = `REF / ${core.screenHeight}P`;
-    $('#hud-ref').setAttribute('aria-label', `Preview setup, reference height ${core.screenHeight} pixels`);
+    $('#share-code').value = encode(core);
     preview();
   }
   function changed() {
@@ -56,15 +48,9 @@ export function initEditor() {
   function selectMap(delta = 0, persist = true) {
     mapIndex = (mapIndex + delta + MAPS.length) % MAPS.length;
     const [id, name] = MAPS[mapIndex], img = $('#map-image');
-    setMapSource(id); img.alt = `${name} crosshair preview`;
-    $('#map-name').textContent = name;
+    img.src = `./assets/maps/${id}.webp`; img.alt = `${name} crosshair preview`;
     document.documentElement.style.setProperty('--map', `url("./assets/maps/${id}.webp")`);
-    if (persist) store('preview', { map: id, zoom });
-  }
-  function setZoom(value, persist = true) {
-    zoom = value; $$('[data-zoom]').forEach(el => el.setAttribute('aria-pressed', String(+el.dataset.zoom === value)));
-    if (persist) store('preview', { map: MAPS[mapIndex][0], zoom });
-    preview();
+    if (persist) store('preview', { map: id });
   }
   const fields = () => GROUPS.flatMap(([id]) => visibleFields(id, core, extra));
   const needle = () => query.trim().toLowerCase();
@@ -203,12 +189,7 @@ export function initEditor() {
       replace(next); setGroup(FIRST); d.close(); notice('Crosshair imported');
     };
   };
-  $('#hud-ref').onclick = () => {
-    const d = dialog('', 'Preview setup', `<form id="preview-form"><label class="stack-label" for="sight">Sight</label>${select('id="sight" class="wide-select"', options([['primary', 'Primary crosshair'], ['scope', 'Scoped rifle dot'], ['sniper', 'Sniper scope']], sight))}<label class="stack-label spaced" for="ref-height">Screen height (px)</label><input class="entry" type="number" id="ref-height" min="240" max="65535" step="1" required value="${core.screenHeight}"></form>`, '<button class="btn secondary" data-close>Cancel</button><button class="btn primary" type="submit" form="preview-form">Apply</button>');
-    $('#preview-form', d).onsubmit = e => { e.preventDefault(); sight = $('#sight', d).value; assign('screenHeight', +$('#ref-height', d).value); $('#viewport').classList.toggle('scoped', sight !== 'primary'); d.close(); preview(); };
-  };
   $('#prev-map').onclick = () => selectMap(-1); $('#next-map').onclick = () => selectMap(1);
-  $$('[data-zoom]').forEach(el => { el.onclick = () => setZoom(+el.dataset.zoom); });
   $('#movement').onclick = e => {
     const b = e.currentTarget; moving = !moving;
     b.setAttribute('aria-pressed', String(moving)); $('[data-state]', b).textContent = moving ? 'Stop' : 'Start'; preview();
@@ -223,9 +204,9 @@ export function initEditor() {
   fireArea.onkeyup = e => { if ([' ', 'Enter'].includes(e.key)) { e.preventDefault(); fire(false); } };
   fireArea.onblur = () => fire(false);
   document.addEventListener('visibilitychange', () => { if (document.hidden) fire(false); preview(); });
-  selectMap(0, false); setZoom(zoom, false); renderSettings(); mark(FIRST); refreshCode();
+  selectMap(0, false); renderSettings(); mark(FIRST); refreshCode();
   return {
-    equip(c) { sight = 'primary'; $('#viewport').classList.remove('scoped'); replace(c); setGroup(FIRST); },
+    equip(c) { replace(c); setGroup(FIRST); },
     activate(on) { active = on; if (!on) { fire(false); cancelAnimationFrame(frame); } else { preview(); hold = 0; spy(); } },
   };
 }

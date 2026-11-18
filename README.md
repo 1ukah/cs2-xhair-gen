@@ -1,6 +1,6 @@
 # xhairgen
 
-A build-free, single-page CS2 crosshair generator and case opener. The interface follows the game's Panorama menus: a top navigation strip, a settings band with section tabs and search, a map preview above the setting rows, and a right-hand rail for your drops. Switch to **HUD Preview** to see the same reticle in a spectator-style practice view. Maps, fonts, inventory and share codes all work locally in the browser.
+A build-free, single-page CS2 crosshair generator and case opener. The interface follows the game's Panorama menus: a top navigation strip, a settings band with section tabs and search, and a map preview above the setting rows. Maps, fonts, inventory and share codes all work locally in the browser.
 
 ## Host on GitHub Pages
 
@@ -21,8 +21,7 @@ Visit **http://127.0.0.1:8000/**. Serve it over HTTP(S); opening `index.html` di
 
 - All ten Crosshair/Scopes styles, in menu order. The style controls follow Panorama's visibility rules, slider limits and increments. Reset restores the game defaults; Undo reverses an edit, import, reset or randomization.
 - Both color pickers support saturation/value, hue, alpha, RGBA channels and hex. General, grenade line-up and sniper sights have their own sections.
-- Cycle through the seven map scenes, enable movement, hold the preview to sample firing, or magnify the reticle. **REF / …P** sets the reference height and the sight being previewed.
-- **HUD Preview** shows the same reticle in a full-window, spectator-style scene. **Esc** closes it.
+- Cycle through the seven map scenes with the arrows, enable movement, or hold the preview to sample firing.
 - **Copy** exports the current, undashed `CS…` game format. Paste it into **CS2 → Settings → Crosshair/Scopes → Share or Import**. Import accepts the same format; old `CSGO-…` codes are identified rather than silently misread.
 - **.cfg** includes the spectator, grenade and sniper preferences that share codes omit. Put `crosshair.cfg` in `Counter-Strike Global Offensive/game/csgo/cfg/` and enter `exec crosshair` in the CS2 developer console.
 
@@ -38,17 +37,17 @@ A uniformly sampled integer selects a rarity. The drop is then generated at rand
 | Red · Covert | 5 | 0.64% | Any style with large sizes, colored outlines, center dots and recoil combined |
 | Gold · Rare Special | 2 | 0.26% | Every option rolled across its full range |
 
-The winning drop is recorded **before** the animation; skipping, switching tabs, reduced motion and reloading do not reroll it. Inventory, generator settings and sound preference are local to this browser.
+Opening spins a 38-tile strip with the Panorama easing curve and ticker. **Inventory** shows every drop, with the most recent ones on its left and a per-rarity count on its right. The winning drop is recorded **before** the animation; skipping, switching tabs, reduced motion and reloading do not reroll it. Inventory, generator settings and sound preference are local to this browser.
 
 ## Source references and credits
 
 - [Valve release notes](https://www.counter-strike.net/news/updates): September 22–30, 2026 crosshair changes.
 - [Panorama settings layout](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/panorama/layout/settings/settings_crosshair.xml), [visibility rules](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/panorama/scripts/settingsmenu_crosshair.js), [English labels](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/resource/csgo_english.txt) and [convar defaults](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/DumpSource2/convars.txt). Snapshot checked November 17, 2026.
-- [Perfect World probability disclosure](https://www.csgo.com.cn/news/gamebroad/20170911/206155.shtml), [Panorama container timing](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/panorama/scripts/popups/popup_capability_decodable.js) and [reel styling](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/panorama/styles/popups/popup_capability_decodable.css).
+- [Perfect World probability disclosure](https://www.csgo.com.cn/news/gamebroad/20170911/206155.shtml), [Panorama container timing](https://github.com/SteamTracking/GameTracking-CS2/blob/1f0929becf45ae98da160cdc3e62e84745fdeebc/game/csgo/pak01_dir/panorama/scripts/popups/popup_capability_decodable.js).
 - CS2 codec: the two required browser modules from [AkiVer/csgo-sharecode 7.0.1](https://www.npmjs.com/package/csgo-sharecode/v/7.0.1), [MIT license](vendor/csgo-sharecode/LICENSE).
 - Valve's in-game map previews, via [SteamAnalyst's crosshair preview assets](https://www.steamanalyst.com/tools/crosshair-generator). Counter-Strike and its map imagery belong to Valve. This is an independent fan tool.
-- [Barlow](https://github.com/jpt/barlow) ([license](assets/fonts/OFL.txt)) and [Saira Condensed](https://github.com/Omnibus-Type/Saira) ([license](assets/fonts/OFL-SairaCondensed.txt)) are self-hosted under the SIL Open Font License. Case artwork, interface mark and synthesized sounds were created for this project.
+- [Barlow](https://github.com/jpt/barlow) ([license](assets/fonts/OFL.txt)) and [Saira Condensed](https://github.com/Omnibus-Type/Saira) ([license](assets/fonts/OFL-SairaCondensed.txt)) are self-hosted under the SIL Open Font License. The interface mark and synthesized sounds were created for this project.
 
 ## Development
 
-`src/settings.js` is the menu and export schema; `src/reticle.js` draws the preview and case specimens; `src/collection.js` contains rarity weights and the per-rarity generators. `src/editor.js`, `src/color.js` and `src/case.js` drive the two pages; `src/rail.js` and `src/preview-hud.js` drive the side rail and the HUD preview. `styles.css` holds the Panorama-style interface and `hud.css` the HUD preview. Run `npm test` with Node 22+ for the format, menu and drop-distribution checks. No install or build step is required.
+`src/settings.js` is the menu and export schema; `src/reticle.js` draws the preview and case specimens; `src/collection.js` contains rarity weights and the per-rarity generators. `src/editor.js`, `src/color.js` and `src/case.js` drive the two pages. `styles.css` holds the Panorama-style interface. Run `npm test` with Node 22+ for the format, menu and drop-distribution checks. No install or build step is required.
