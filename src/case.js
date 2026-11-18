@@ -45,7 +45,7 @@ export function initCase(equip, rail) {
     const singleChance = (t.weight / TOTAL * 100 / ITEMS.filter(other => other.tier === i.tier).length).toFixed(3);
     const d = dialog(fromInventory ? 'Local inventory' : 'Series 01 · Case contents', concealed ? 'Rare Special Item' : i.name,
       `<div class="inspect-art" style="${palette(t)}">${art(i, 108, concealed)}</div><div class="inspect-details"><span class="rarity-pill" style="${palette(t)}">${t.label}</span><span>${concealed ? 'Special drop' : styleName(i.core.style)}</span></div><p class="form-note">${singleChance}% chance per opening · ${owned[i.id] || 0} in your inventory</p>`,
-      `${fromInventory ? '<button class="text-btn mr-auto" id="inventory-back">Back to inventory</button>' : ''}<button class="btn secondary" data-close>Close</button>${owned[i.id] ? `<button class="btn primary" id="inspect-equip">${icon('target')}Use in editor</button>` : ''}`);
+      `${fromInventory ? '<button class="text-btn mr-auto" id="inventory-back">Back to inventory</button>' : ''}<button class="btn secondary" data-close>Close</button>${owned[i.id] ? `<button class="btn primary" id="inspect-equip">${icon('target')}Use in generator</button>` : ''}`);
     if ($('#inspect-equip', d)) $('#inspect-equip', d).onclick = () => use(i);
     if ($('#inventory-back', d)) $('#inventory-back', d).onclick = inventory;
   }
@@ -60,13 +60,13 @@ export function initCase(equip, rail) {
   }
   function dropRow(id) {
     const i = byId(id), t = tierOf(i);
-    return `<li class="drop" style="${palette(t)}"><button type="button" class="drop-main" data-item="${id}" title="Inspect ${i.name}"><span class="drop-art">${specimen(i.core, 30)}</span><span class="drop-text"><strong>${i.name}</strong><small><i></i>${t.label}<b>×${owned[id]}</b></small></span></button><button type="button" class="drop-use" data-equip="${id}" aria-label="Use ${i.name} in editor" title="Use in editor">${icon('target', 19)}</button></li>`;
+    return `<li class="drop" style="${palette(t)}"><button type="button" class="drop-main" data-item="${id}" title="Inspect ${i.name}"><span class="drop-art">${specimen(i.core, 30)}</span><span class="drop-text"><strong>${i.name}</strong><small><i></i>${t.label}<b>×${owned[id]}</b></small></span></button><button type="button" class="drop-use" data-equip="${id}" aria-label="Use ${i.name} in generator" title="Use in generator">${icon('target', 19)}</button></li>`;
   }
   function renderRail() {
     const total = totalOwned(), visit = `<a class="box-btn" href="#case">${icon('case', 15)}Open a case</a>`;
     $('#rail-recent-count').textContent = total; $('#rail-collection-count').textContent = order.length;
     $('#rail-summary').textContent = total ? `${total} ${total === 1 ? 'drop' : 'drops'} · ${order.length} of ${ITEMS.length} designs collected.` : 'Nothing unsealed yet.';
-    $('#rail-tip').textContent = total ? 'Pick a drop to inspect it, or use its target button to load it into the editor.' : 'Open an xhairgen Case to add your first reticle. Drops are kept in this browser.';
+    $('#rail-tip').textContent = total ? 'Pick a drop to inspect it, or use its target button to load it into the generator.' : 'Open an xhairgen Case to add your first reticle. Drops are kept in this browser.';
     $('#rail-recent').innerHTML = total
       ? `<ul class="drop-list">${order.slice(0, 12).map(dropRow).join('')}</ul><div class="rail-foot"><button type="button" class="box-btn" data-rail-all>${icon('grid', 15)}Full inventory</button></div>`
       : `<p class="rail-empty">No drops yet.</p><div class="rail-foot">${visit}</div>`;
@@ -82,7 +82,7 @@ export function initCase(equip, rail) {
     reward.style.setProperty('--rarity', t.color);
     reward.innerHTML = `<div class="reward-art">${specimen(i.core, 94)}</div><div class="reward-banner"><h2>${i.name}</h2><p><span class="rarity-pill" style="${palette(t)}">${t.label}</span>${styleName(i.core.style)}</p></div>`;
     setCaption('Added to inventory', i.name);
-    actions.innerHTML = `<button type="button" class="icon-btn" data-copy-drop aria-label="Copy drop share code" title="Copy share code">${icon('copy')}</button><button type="button" class="btn secondary compact" data-open>Open another</button><button type="button" class="btn primary compact" data-equip>${icon('target', 16)}Use in editor</button>`;
+    actions.innerHTML = `<button type="button" class="icon-btn" data-copy-drop aria-label="Copy drop share code" title="Copy share code">${icon('copy')}</button><button type="button" class="btn secondary compact" data-open>Open another</button><button type="button" class="btn primary compact" data-equip>${icon('target', 16)}Use in generator</button>`;
   }
   function finish(audible = true) {
     if (!run) return;

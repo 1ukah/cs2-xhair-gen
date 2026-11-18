@@ -93,7 +93,7 @@ svg.icon,i[data-icon]{display:inline-flex;align-items:center;justify-content:cen
 .main-nav>[aria-current]{color:#fff}
 .main-nav>[aria-current]::after{content:"";position:absolute;inset:auto 14px 0;height:3px;background:var(--accent-line);box-shadow:0 0 12px #5db5ea99}
 .counter{min-width:30px;padding:3px 6px 2px;font:600 16px/1 var(--display);letter-spacing:.5px;text-align:center;color:#dfe6ea;background:#0000005c;border:1px solid #ffffff33}
-.rail-open{display:none}
+.rail-open,#inventory .inventory-ico{display:none}
 
 .shell{grid-column:1;grid-row:2;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
 .page{min-height:100%}
@@ -157,9 +157,9 @@ svg.icon,i[data-icon]{display:inline-flex;align-items:center;justify-content:cen
 
 .settings-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;margin-right:-14px;padding:0 14px 28px 0}
 .settings-scroll:focus-visible{outline-offset:-2px}
-.group-title{margin:46px 0 8px;color:#aab3ba;font:italic 700 27px/1.1 var(--display);letter-spacing:.3px}
+.group-title{margin:0 0 8px;padding-top:36px;color:#aab3ba;font:italic 700 27px/1.1 var(--display);letter-spacing:.3px}
 .group-title:focus{outline:none}
-.set-group:first-child .group-title:not(.sr-only){margin-top:22px}
+.set-group:first-child .group-title:not(.sr-only){padding-top:18px}
 .setting-row{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:53px;padding:6px 0;border-bottom:1px solid var(--line)}
 .setting-row label{font-size:17px;line-height:1.25;color:var(--text)}
 .setting-row:hover label{color:#fff}
@@ -220,15 +220,15 @@ input[type="range"]:hover::-moz-range-thumb{background:#fff}
 
 .reel{position:absolute;left:0;right:0;top:50%;height:clamp(132px,19vh,176px);transform:translateY(-50%);--step:clamp(118px,13vw,168px);background:#0b0f12b3;border-block:1px solid #ffffff2e;box-shadow:0 14px 40px #000000a6}
 .reel-layer,.reel-lens,.needle{position:absolute;inset:0}
-.reel>.reel-layer{filter:brightness(.6) blur(.6px)}
+.reel>.reel-layer{filter:brightness(.5) saturate(.8)}
 .reel-track{position:absolute;display:flex;left:50%;top:10px;bottom:10px;width:max-content;will-change:transform}
 .reel-slot{display:flex;flex:none;width:var(--step);padding:0 3px}
 .reel-card{display:flex;flex-direction:column;width:100%;min-width:0;overflow:hidden;background:linear-gradient(180deg,#39424a,#6b757d);border-bottom:5px solid var(--rarity);color:var(--rarity)}
 .reel-card>span{flex:1;display:grid;place-items:center;min-height:0;background:linear-gradient(0deg,color-mix(in srgb,var(--rarity) 30%,transparent),transparent 62%)}
 .reel-card>span>svg,.item-art>svg{filter:drop-shadow(0 2px 3px #0008)}
 .reel-card b{padding:4px 7px 5px;background:#10151ad1;color:#e6ebee;font:600 14px/1.2 var(--ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.reel-lens{clip-path:inset(-7px calc(50% - var(--step) * .53));overflow:visible}
-.reel-lens .reel-layer{transform:scale(1.1);transform-origin:center}
+.reel-lens{clip-path:inset(0 calc(50% - var(--step) * .5))}
+.reel-lens .reel-layer{filter:brightness(1.08)}
 .needle{z-index:1;left:calc(50% - 1px);right:auto;width:2px;background:#ecd55a;box-shadow:0 0 8px #ecd55acc}
 .needle::before,.needle::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border-inline:7px solid transparent}
 .needle::before{top:-1px;border-top:9px solid #ecd55a}
@@ -439,7 +439,7 @@ textarea.entry{height:auto;padding:8px 10px}
   .select-shell{max-width:56%}
   .range-pair{gap:10px;flex-basis:54%}
   .numeric{width:66px}
-  .group-title{font-size:24px;margin-top:34px}
+  .group-title{font-size:24px;padding-top:28px}
   .editor-foot{padding:0 14px}
   .foot-btn{font-size:20px;gap:9px}
   .foot-btn svg{width:24px;height:24px}
@@ -458,6 +458,7 @@ textarea.entry{height:auto;padding:8px 10px}
 }
 @media(max-width:420px){
   .inventory-word{display:none}
+  #inventory .inventory-ico{display:inline-flex}
   .main-nav>*{padding:0 10px}
   .opening-controls{flex-wrap:wrap}
   #case-actions{width:100%;justify-content:flex-end}
