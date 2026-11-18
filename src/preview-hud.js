@@ -70,7 +70,6 @@ export function initPreviewHud() {
     const team = t => roster.map((p, i) => p.team === t ? slot(p, i) : '').join('');
     stage.innerHTML = `<div class="hud-layer">
       <button type="button" class="hud-close" data-act="close" aria-label="Close HUD preview">${CLOSE}<kbd>Esc</kbd></button>
-      <p class="hud-mode"><b>HUD preview</b><span>Simulated match</span></p>
       <div class="hud-radar"><svg viewBox="0 0 100 100" role="img" data-hud="radar"></svg>
         <p class="hud-callout"><strong data-hud="callout"></strong><span data-hud="map"></span></p></div>
       <div class="hud-score">
@@ -88,8 +87,8 @@ export function initPreviewHud() {
             <div class="hud-vitals"><span class="hud-armor">${SHIELD}<b data-hud="armor"></b></span>
               <span class="hud-health"><b data-hud="health"></b><i><u data-hud="health-bar"></u></i></span></div>
             <div class="hud-plate"><p class="hud-who"><strong data-hud="name"></strong><span>Shots <b data-hud="shots"></b></span></p>
-              <span class="hud-face" data-hud="face"><small>SIM</small><b></b></span>
-              <p class="hud-weapon"><strong data-hud="weapon"></strong><span>Practice ammo</span></p></div>
+              <span class="hud-face" data-hud="face"><b></b></span>
+              <p class="hud-weapon"><strong data-hud="weapon"></strong></p></div>
             <div class="hud-ammo"><span class="hud-mag"><b data-hud="ammo"></b><i><u></u></i></span><span class="hud-reserve" data-hud="reserve"></span>
               <em>Reloading</em></div>
           </div>
@@ -185,7 +184,7 @@ export function initPreviewHud() {
     });
     ui.radar.innerHTML = out;
     ui.radar.setAttribute('aria-label', `Simulated radar for ${label}. Watching ${p.name} at ${p.zone}.`);
-    ui.callout.textContent = p.zone; ui.map.textContent = `${label} · simulated`;
+    ui.callout.textContent = p.zone; ui.map.textContent = label;
   }
   function renderSlots() {
     roster.forEach((p, i) => {

@@ -5,17 +5,17 @@ html.hud-lock{overflow:hidden!important}
 dialog#hud-stage{
   --hud:clamp(11px,min(1.5vh,.95vw),20px);
   --hud-accent:#f1e157;--hud-ct:#7fc6f1;--hud-t:#efa93b;--hud-ink:#f4f6f5;--hud-plate:#12181ccc;
-  --hud-display:var(--display,Condensed,"Arial Narrow",sans-serif);--hud-ui:var(--ui,Barlow,"Segoe UI",sans-serif);
+  --hud-display:var(--display,"Arial Narrow",sans-serif);--hud-ui:var(--ui,Barlow,"Segoe UI",sans-serif);
   --st:env(safe-area-inset-top,0px);--sr:env(safe-area-inset-right,0px);--sb:env(safe-area-inset-bottom,0px);--sl:env(safe-area-inset-left,0px);
   position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;
   border:0;border-radius:0;box-shadow:none;overflow:hidden;background:#0b0f12;color:var(--hud-ink);
-  font:700 var(--hud)/1.15 var(--hud-display);letter-spacing:.02em;animation:none;
+  font:500 var(--hud)/1.15 var(--hud-display);letter-spacing:.02em;animation:none;
   user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
 }
 dialog#hud-stage:not([open]){display:none}
 dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 #hud-stage p,#hud-stage ol,#hud-stage ul{margin:0;padding:0;list-style:none}
-#hud-stage b,#hud-stage strong{font-weight:700}
+#hud-stage b,#hud-stage strong{font-weight:500}
 #hud-stage i,#hud-stage em,#hud-stage u{font-style:normal;text-decoration:none}
 #hud-stage [hidden]{display:none!important}
 
@@ -40,16 +40,13 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-close svg{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .hud-close kbd{font-size:max(10px,.72em);color:#c9d1d4;letter-spacing:.08em;text-transform:uppercase}
 .hud-close:hover{background:#27323ae6!important;border-color:var(--hud-accent)!important;color:var(--hud-accent)}
-.hud-mode{position:absolute;top:calc(.62em + var(--st));right:calc(5.9em + var(--sr));display:flex;flex-direction:column;align-items:flex-end;gap:.1em;text-transform:uppercase;white-space:nowrap}
-.hud-mode b{font-size:max(11px,.86em);letter-spacing:.09em}
-.hud-mode span{font-size:max(10px,.7em);color:var(--hud-accent);letter-spacing:.08em}
 
 .hud-radar{position:absolute;top:calc(.4em + var(--st));left:calc(.5em + var(--sl));width:18em}
 .hud-radar svg{display:block;width:100%;aspect-ratio:1;background:#1b2226d9;border:1px solid #b9cf7a73;box-shadow:0 0 0 1px #0006}
 .hud-radar .rf{fill:#a2aaa6;opacity:.74}
 .hud-radar .rs.ct{fill:#7fc6f1;opacity:.3}.hud-radar .rs.t{fill:#efa93b;opacity:.3}
 .hud-radar .site{fill:#e2704a26;stroke:#e2704a;stroke-width:.7}
-.hud-radar text{fill:#f0b03a;font:700 9px var(--hud-display);paint-order:stroke;stroke:#2a2318;stroke-width:1.4px}
+.hud-radar text{fill:#f0b03a;font:500 9px var(--hud-display);paint-order:stroke;stroke:#2a2318;stroke-width:1.4px}
 .hud-radar .cone{fill:#fff;opacity:.4}
 .hud-radar .dot{stroke:#11181c;stroke-width:.6}
 .hud-radar .dot.ct{fill:var(--hud-ct)}.hud-radar .dot.t{fill:var(--hud-t)}
@@ -125,7 +122,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-who span b{color:#fff}
 .hud-face{position:relative;display:grid;place-items:center;width:3.9em;height:3.9em;margin-top:-.9em;border-radius:50%;border:.16em solid var(--hud-accent);background:linear-gradient(140deg,hsl(var(--h,52) 58% 46%),hsl(calc(var(--h,52) + 48) 46% 20%));box-shadow:0 2px 8px #0008}
 .hud-face>b{font-size:1.9em;color:#fffffff0}
-.hud-face small{position:absolute;bottom:calc(100% + .2em);left:50%;transform:translateX(-50%);padding:.1em .45em;font-size:max(9px,.62em);letter-spacing:.12em;color:var(--hud-accent);background:#12181cd9;border:1px solid currentColor}
 .hud-ammo{position:relative;display:flex;align-items:flex-end;gap:.7em;color:var(--hud-accent)}
 .hud-mag i{background:currentColor;height:.12em}.hud-mag u{display:block;width:0;height:100%;background:#fff}
 .hud-reserve{font-size:1.55em;line-height:1.45;min-width:1.6em;font-variant-numeric:tabular-nums}
@@ -166,7 +162,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   .hud-ava{height:2.5em}.hud-ava b{font-size:1.3em}
   .hp-bar{height:.36em}
   .hud-clock{width:5em}.hud-clock time{font-size:1.35em}.hud-rounds{font-size:1.3em}
-  .hud-mode span{display:none}
   .hud-banner{top:calc(8.5em + var(--st));min-width:17em;padding-inline:1.4em}.hud-banner strong{font-size:1.6em}
   .hud-chat,.hud-right{display:none}
   .hud-bottom{grid-template-columns:auto minmax(0,1fr);gap:.8em;padding-inline:calc(.7em + var(--sl)) calc(.7em + var(--sr))}
@@ -179,7 +174,7 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 }
 @media(max-height:520px){
   .hud-radar{width:9.5em}.hud-callout span{display:none}
-  .hud-face{width:3.1em;height:3.1em;margin-top:-.4em}.hud-face small{display:none}
+  .hud-face{width:3.1em;height:3.1em;margin-top:-.4em}
   .hud-banner{top:calc(5.6em + var(--st))}
 }
 @media(max-width:700px){
@@ -187,8 +182,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   .hud-team,.hud-score{gap:.12em}
   .hud-radar{top:calc(4.6em + var(--st));width:9.6em}
   .hud-close{top:calc(4.6em + var(--st));min-width:40px;height:40px}
-  .hud-mode{top:calc(4.6em + 46px + var(--st));right:calc(.6em + var(--sr))}
-  .hud-mode span{display:block}
   .hud-feed{top:calc(4.6em + 86px + var(--st))}.hud-feed li{font-size:.9em;padding:.25em .5em}
   .hud-banner{top:calc(17.5em + var(--st));min-width:0;width:max-content;max-width:calc(100% - 2em)}.hud-banner strong{letter-spacing:.18em;margin-right:-.18em}
   .hud-bottom{grid-template-columns:minmax(0,1fr);gap:.3em;padding-inline:calc(.6em + var(--sl)) calc(.6em + var(--sr))}
@@ -204,7 +197,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 @media(max-width:350px){dialog#hud-stage{--hud:9.6px}.hud-weapon span{display:none}}
 @media(pointer:coarse),(max-width:700px){
   .hud-close{min-width:40px;min-height:40px}.hud-close kbd{display:none}
-  .hud-mode{right:calc(.6em + 48px + var(--sr))}
   .hud-hint{display:none}
   .hud-keys{gap:6px;font-size:13px;padding-bottom:4px}
   .hud-keys button{justify-content:center;min-width:40px;min-height:40px;padding:0 12px;background:#12181cd1;border:1px solid #ffffff38}
@@ -213,7 +205,4 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   .hud-keys button i{display:block;font-size:18px;line-height:1}
   .hud-pair{gap:6px}.hud-pair>span{font-size:12px;letter-spacing:.06em;text-transform:uppercase}
   .hud-player{min-width:24px}
-}
-@media(max-width:700px){
-  .hud-mode{right:calc(.6em + var(--sr))}
 }

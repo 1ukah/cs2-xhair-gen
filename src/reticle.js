@@ -68,6 +68,6 @@ export function reticle(c, movement = 0, shot = 0) {
 }
 export function specimen(c, size = 50, movement = 0) {
   const extent = [3, 8, 9].includes(c.style) ? c.gap + c.thickness : c.style === 6 ? c.thickness : c.length + Math.abs(c.gap) + c.thickness;
-  const r = clamp(extent + 3, 12, 400);
+  const r = clamp(extent + 3, 8, 400);
   return `<svg aria-hidden="true" width="${size}" height="${size}" viewBox="${-r} ${-r} ${2 * r} ${2 * r}">${reticle(c, movement)}</svg>`;
 }

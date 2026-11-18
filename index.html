@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#272e35">
-  <meta name="description" content="xhairgen: build and share a Counter-Strike 2 crosshair, or unseal a reticle from the xhairgen Case.">
-  <title>xhairgen · CS2 Crosshair Generator</title>
+  <meta name="description" content="Build and share a Counter-Strike 2 crosshair, or unseal a random one from the Series 1 Case.">
+  <title>CS2 Crosshair Generator</title>
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
-  <link rel="preload" href="./assets/fonts/condensed-semibold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/saira-condensed-medium.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./hud.css">
 </head>
@@ -15,10 +15,9 @@
   <a class="skip" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="util">
-      <a class="util-btn" href="#editor" data-page="editor" aria-current="page" aria-label="Crosshair generator" title="Crosshair generator"><i data-icon="home" data-size="24"></i></a>
+      <a class="util-btn" href="#editor" data-page="editor" aria-current="page" aria-label="Crosshair generator"><i data-icon="home" data-size="24"></i></a>
       <button type="button" class="util-btn" id="sound" aria-label="Toggle sound"></button>
-      <button type="button" class="util-btn" data-about aria-label="How it works" title="How it works"><i data-icon="info" data-size="23"></i></button>
-      <span class="wordmark" aria-hidden="true">xhairgen</span>
+      <button type="button" class="util-btn" data-about aria-label="How it works"><i data-icon="info" data-size="23"></i></button>
     </div>
     <nav class="main-nav" aria-label="Main">
       <a href="#editor" data-page="editor" aria-current="page">Generator</a>
@@ -26,7 +25,7 @@
       <button type="button" id="inventory"><i data-icon="inventory" data-size="20" class="inventory-ico"></i><span class="inventory-word">Inventory</span><span class="counter" id="inventory-count">00</span></button>
     </nav>
     <div class="util util-end">
-      <button type="button" class="util-btn rail-open" id="rail-open" aria-expanded="false" aria-controls="rail" aria-label="Recent drops" title="Recent drops"><i data-icon="user" data-size="24"></i></button>
+      <button type="button" class="util-btn rail-open" id="rail-open" aria-expanded="false" aria-controls="rail" aria-label="Inventory"><i data-icon="user" data-size="24"></i></button>
     </div>
   </header>
   <main class="shell" id="main" tabindex="-1">
@@ -37,7 +36,7 @@
       <div class="band">
         <div class="band-inner">
           <div class="band-search" role="search">
-            <button type="button" class="search-btn" id="search-toggle" aria-expanded="false" aria-controls="settings-search" aria-label="Search settings" title="Search settings ( / )"><i data-icon="search" data-size="22"></i></button>
+            <button type="button" class="search-btn" id="search-toggle" aria-expanded="false" aria-controls="settings-search" aria-label="Search settings"><i data-icon="search" data-size="22"></i></button>
             <input type="search" id="settings-search" placeholder="Search settings" aria-label="Search settings" autocomplete="off" spellcheck="false" hidden>
           </div>
           <nav class="tabs" id="groups" aria-label="Settings sections"></nav>
@@ -49,15 +48,15 @@
             <div class="viewport" id="viewport">
               <img id="map-image" class="map-image" src="./assets/maps/dust2.webp" alt="Dust II crosshair preview" fetchpriority="high">
               <div class="view-shade"></div>
-              <button type="button" id="fire-area" class="fire-area" aria-label="Test fire preview; hold the mouse, Space, or Enter" title="Hold to test fire"></button>
+              <button type="button" id="fire-area" class="fire-area" aria-label="Test fire preview; hold the mouse, Space, or Enter"></button>
               <svg id="aim" class="aim" width="2" height="2" viewBox="-1 -1 2 2" aria-hidden="true"></svg>
             </div>
             <div class="view-ui">
               <div class="view-top">
-                <p class="view-chip"><strong id="map-name">Dust II</strong><span id="map-id">DE_DUST2</span><span id="map-count">1 / 7</span></p>
+                <p class="view-chip" id="map-name">Dust II</p>
                 <div class="view-tools">
                   <div class="zoom" role="group" aria-label="Preview magnification"><button type="button" data-zoom="1" aria-pressed="true">1×</button><button type="button" data-zoom="2" aria-pressed="false">2×</button><button type="button" data-zoom="4" aria-pressed="false">4×</button></div>
-                  <button type="button" class="view-btn" id="hud-ref" title="Preview setup and reference height">REF / 1080P</button>
+                  <button type="button" class="view-btn" id="hud-ref">REF / 1080P</button>
                   <button type="button" class="view-btn" id="hud-toggle">HUD Preview</button>
                 </div>
               </div>
@@ -76,50 +75,27 @@
         </div>
         <div class="code-strip">
           <label for="share-code">Share Code</label>
-          <input id="share-code" readonly spellcheck="false" title="Paste in CS2: Settings › Crosshair/Scopes › Share or Import">
-          <button type="button" class="box-btn" id="copy"><i data-icon="copy" data-size="16"></i>Copy<span class="lg"> code</span></button>
-          <button type="button" class="box-btn" id="download" title="Download every Crosshair/Scopes setting as xhairgen.cfg"><i data-icon="download" data-size="16"></i><span class="lg">Full config </span>.cfg</button>
+          <input id="share-code" readonly spellcheck="false">
+          <button type="button" class="box-btn" id="copy"><i data-icon="copy" data-size="16"></i>Copy</button>
+          <button type="button" class="box-btn" id="download"><i data-icon="download" data-size="16"></i>.cfg</button>
         </div>
         <div class="settings-scroll" id="settings-scroll" role="region" aria-label="Crosshair settings" tabindex="0"><div id="settings"></div></div>
       </div>
       <footer class="editor-foot">
-        <span class="save-status" id="save-status">Local profile</span>
         <button type="button" class="foot-btn" id="random"><i data-icon="shuffle" data-size="30"></i>Randomize</button>
       </footer>
     </section>
 
     <section id="case-page" class="page case-page" aria-labelledby="case-title" hidden>
-      <h1 class="sr-only" id="case-title">xhairgen Case</h1>
-      <div class="band">
-        <div class="band-inner">
-          <nav class="tabs" id="case-tabs" aria-label="Case sections">
-            <button type="button" data-jump="case-open" aria-current="true">Container</button>
-            <button type="button" data-jump="case-odds">Drop odds</button>
-            <button type="button" data-jump="case-contents">Contents</button>
-          </nav>
-        </div>
-      </div>
+      <h1 class="sr-only" id="case-title">Series 1 Case</h1>
       <div class="case-runway">
-        <section class="case-sec" id="case-open" aria-label="Container">
-          <div class="case-stage" id="case-stage" data-phase="idle">
-            <div class="stage-grid"></div><span class="stage-caption">xhairgen Case <b>/</b> Series 01</span>
-            <div class="stage-art"><div class="stage-glow"></div><svg class="crate" viewBox="0 0 450 284" fill="none" role="img" aria-label="Amber hard-shell xhairgen Case"><use href="./assets/case.svg#crate-body"/><use class="lid" href="./assets/case.svg#crate-lid"/></svg></div>
-            <div class="reel" id="reel" aria-hidden="true" hidden><div class="reel-layer"><div class="reel-track"></div></div><div class="reel-lens"><div class="reel-layer"><div class="reel-track"></div></div></div><div class="needle"></div></div>
-            <div class="reward" id="reward" hidden></div>
-          </div>
-          <div class="opening-controls"><div class="case-caption" aria-live="polite"><small id="case-kicker">Ready to open</small><strong id="case-status">xhairgen Case</strong></div><div id="case-actions"></div></div>
-        </section>
-        <section class="case-sec" id="case-odds" aria-labelledby="odds-title">
-          <h2 class="group-title" id="odds-title" tabindex="-1">Drop Odds</h2>
-          <div id="chance-list"></div>
-          <div class="odds-bar" id="odds-bar" aria-hidden="true"></div>
-          <p class="cfg-hint"><i data-icon="info" data-size="16"></i><span>Each opening is an independent roll using the standard CS2 weapon-case rarity weights.</span></p>
-        </section>
-        <section class="case-sec" id="case-contents" aria-labelledby="contents-title">
-          <div class="title-row"><h2 class="group-title" id="contents-title" tabindex="-1">Case Contents</h2><span class="panel-meta" id="contents-count"></span></div>
-          <div class="item-grid" id="items"></div>
-        </section>
-        <footer class="site-foot"><span>xhairgen <b>/</b> Independent fan tool</span><a href="https://www.counter-strike.net/news/updates" target="_blank" rel="noopener">CS2 patch notes <span aria-hidden="true">↗</span></a></footer>
+        <div class="case-stage" id="case-stage" data-phase="idle">
+          <div class="stage-art"><svg class="crate" viewBox="0 0 450 284" fill="none" role="img" aria-label="Series 1 Case"><use href="./assets/case.svg#crate-body"/><use class="lid" href="./assets/case.svg#crate-lid"/></svg></div>
+          <div class="reel" id="reel" aria-hidden="true" hidden><div class="reel-layer"><div class="reel-track"></div></div><div class="needle"></div></div>
+          <div class="reward" id="reward" aria-live="polite" hidden></div>
+        </div>
+        <div class="opening-controls"><strong class="case-name">Series 1 Case</strong><div id="case-actions"></div></div>
+        <div class="chance-list" id="chance-list"></div>
       </div>
     </section>
   </main>
@@ -127,18 +103,11 @@
   <div class="scrim" id="rail-scrim" hidden></div>
   <aside class="rail" id="rail" aria-label="Inventory and recent drops">
     <div class="rail-head">
-      <button type="button" class="rail-row" id="rail-toggle" aria-expanded="false" aria-controls="rail-panel" title="Inventory and recent drops"><span class="rail-ico"><i data-icon="user" data-size="24"></i></span><span class="rail-label">Inventory</span></button>
-      <button type="button" class="rail-act" id="rail-all" aria-label="Open full inventory" title="Open full inventory" hidden><i data-icon="grid" data-size="19"></i></button>
+      <button type="button" class="rail-row" id="rail-toggle" aria-expanded="false" aria-controls="rail-panel"><span class="rail-ico"><i data-icon="user" data-size="24"></i></span><span class="rail-label">Inventory</span></button>
+      <button type="button" class="rail-act" id="rail-all" aria-label="Open full inventory" hidden><i data-icon="grid" data-size="19"></i></button>
       <button type="button" class="rail-act rail-close" id="rail-close" aria-label="Close panel" hidden><i data-icon="close" data-size="19"></i></button>
     </div>
     <div class="rail-panel" id="rail-panel">
-      <div class="rail-intro">
-        <div class="rail-copy" id="rail-copy" hidden><h2>Recent drops</h2><p id="rail-summary">Nothing unsealed yet.</p></div>
-        <div class="rail-tip">
-          <button type="button" class="rail-ico" data-about aria-label="How it works" title="How it works"><i data-icon="info" data-size="22"></i></button>
-          <p id="rail-tip" hidden></p>
-        </div>
-      </div>
       <div class="rail-secs">
         <section class="rail-sec">
           <h3><button type="button" class="rail-row" data-rail-sec="recent" aria-expanded="false" aria-controls="rail-recent"><span class="rail-ico"><i data-icon="history" data-size="26"></i><b id="rail-recent-count">0</b></span><span class="rail-label">Recent Drops</span></button></h3>
