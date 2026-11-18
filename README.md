@@ -37,7 +37,7 @@ A uniformly sampled integer selects a rarity. The drop is then generated at rand
 | Red · Covert | 5 | 0.64% | Any style with large sizes, colored outlines, center dots and recoil combined |
 | Gold · Rare Special | 2 | 0.26% | Every option rolled across its full range |
 
-Opening spins a 44-tile strip with the Panorama easing curve and ticker. **Inventory** shows every drop, with the most recent ones on its left and a per-rarity count on its right. The winning drop is recorded **before** the animation; skipping, switching tabs, reduced motion and reloading do not reroll it. Inventory, generator settings and sound preference are local to this browser.
+Opening spins a 44-tile strip with the Panorama easing curve and ticker. **Auto** keeps opening cases until it is switched off or the page is left. **Inventory** shows every drop, with the most recent ones on its left and a per-rarity count on its right. Favorites stay at the top and are kept when the 300-drop limit is reached. The rarity chips filter the grid; **Delete** removes the selected drops, or every non-favorite drop in the current filter, after a second click to confirm. The winning drop is recorded **before** the animation; skipping, switching tabs, reduced motion and reloading do not reroll it. Inventory, generator settings and sound preference are local to this browser.
 
 ## Source references and credits
 
