@@ -2,6 +2,7 @@ import { DEFAULT, EXTRA_DEFAULT, GROUPS, MAPS, bounded, clamp, colorChannels, co
 import { randomCrosshair } from './collection.js';
 import { reticle } from './reticle.js';
 import { pickColor } from './color.js';
+import { mapImageSource } from './map-image.js';
 import { $, $$, activeSection, copyText, dialog, icon, load, notice, reduced, scrollToSection, store, tone } from './ui.js';
 
 const num = (value, step) => step === 1 ? String(value) : value.toFixed(2);
@@ -17,7 +18,7 @@ export function initEditor() {
   let active = true, moving = false, firing = false, startFire = 0, endFire = -Infinity, frame = 0, pendingSave = 0;
   let sight = 'primary', gesture = null, query = '', hold = 0, spyFrame = 0;
   const history = [], scroller = $('#settings-scroll'), settings = $('#settings'), aim = $('#aim'), fireArea = $('#fire-area');
-  const searchBtn = $('#search-toggle'), searchBox = $('#settings-search');
+  const searchBtn = $('#search-toggle'), searchBox = $('#settings-search'), setMapSource = mapImageSource($('#map-image'));
   function remember() {
     history.push([{ ...core }, { ...extra }]); if (history.length > 40) history.shift();
     $('#undo').disabled = false;
@@ -56,7 +57,7 @@ export function initEditor() {
   function selectMap(delta = 0, persist = true) {
     mapIndex = (mapIndex + delta + MAPS.length) % MAPS.length;
     const [id, name] = MAPS[mapIndex], img = $('#map-image');
-    img.src = `./assets/maps/${id}.webp`; img.alt = `${name} crosshair preview`;
+    setMapSource(id); img.alt = `${name} crosshair preview`;
     $('#map-name').textContent = name; $('#map-id').textContent = `DE_${id.toUpperCase()}`;
     $('#map-count').textContent = `${mapIndex + 1} / ${MAPS.length}`;
     document.documentElement.style.setProperty('--map', `url("./assets/maps/${id}.webp")`);

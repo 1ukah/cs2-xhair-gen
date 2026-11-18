@@ -17,7 +17,7 @@ function route(scroll) {
   $$('[data-page]').forEach(el => {
     if (el.dataset.page === id) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
   });
-  document.title = `xhairgen · ${isCase ? 'xhairgen Case' : 'CS2 Crosshair Editor'}`;
+  document.title = `xhairgen · ${isCase ? 'Case' : 'CS2 Crosshair Generator'}`;
   rail.dismiss();
   if (scroll && location.hash !== '#main') {
     $('#main').scrollTop = 0; $('#main').focus({ preventScroll: true });
