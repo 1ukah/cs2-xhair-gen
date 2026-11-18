@@ -83,4 +83,3 @@ export function assertCrosshairChecksum(bytes) {
         throw new InvalidCrosshairShareCode();
     }
 }
-//# sourceMappingURL=share-code.js.map

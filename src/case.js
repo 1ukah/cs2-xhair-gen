@@ -6,7 +6,6 @@ import { $, $$, activeSection, copyText, dialog, icon, load, modal, notice, redu
 const count = n => String(n).padStart(2, '0');
 const byId = id => ITEMS.find(i => i.id === id);
 const REEL = { tiles: 38, start: 2, winner: 34, duration: 6000, ease: 'cubic-bezier(0.075, 0.82, 0.165, 1)' };
-// Panorama's weapon ticker starts at ~16 Hz, with increasingly spaced final clicks.
 const TICKS = [...Array.from({ length: 23 }, (_, i) => Math.round(i * 62.5)), 1351, 1483, 1620, 1701, 1786, 1872, 2003, 2154, 2313, 2466, 2615, 2773, 2941, 3104, 3339, 3630, 3953, 4385, 5004];
 const palette = t => `--rarity:${t.color}`;
 const mystery = i => i.tier === 'gold';
@@ -59,7 +58,6 @@ export function initCase(equip, rail) {
     if (grid) grid.onclick = e => { const el = e.target.closest('[data-item]'); if (el) inspect(byId(el.dataset.item), true); };
     if ($('#visit-case', d)) $('#visit-case', d).onclick = () => { d.close(); location.hash = 'case'; };
   }
-  // Rail: the newest designs first. It is refreshed on reveal, never mid-roll, so it cannot spoil a drop.
   function dropRow(id) {
     const i = byId(id), t = tierOf(i);
     return `<li class="drop" style="${palette(t)}"><button type="button" class="drop-main" data-item="${id}" title="Inspect ${i.name}"><span class="drop-art">${specimen(i.core, 30)}</span><span class="drop-text"><strong>${i.name}</strong><small><i></i>${t.label}<b>×${owned[id]}</b></small></span></button><button type="button" class="drop-use" data-equip="${id}" aria-label="Use ${i.name} in editor" title="Use in editor">${icon('target', 19)}</button></li>`;
@@ -116,7 +114,6 @@ export function initCase(equip, rail) {
     result = drawItem(); pending = result.id;
     owned[pending] = (owned[pending] || 0) + 1;
     const idx = order.indexOf(pending); if (idx >= 0) order.splice(idx, 1); order.unshift(pending);
-    // Save the actual selection before the decoration starts. Reload/skip cannot reroll it.
     persist(); badge(); unlockAudio();
     run = { timers: [], animations: [] }; setPhase('unlocking');
     reward.hidden = true; reel.hidden = true; setCaption('Opening container', 'Unlocking case…');
@@ -144,7 +141,6 @@ export function initCase(equip, rail) {
   $('#contents-count').textContent = `${ITEMS.length} possible drops`;
   $('#chance-list').innerHTML = TIERS.map(t => `<div class="chance-row" style="${palette(t)}"><span><i></i>${t.label}</span><b>${odds(t)}</b></div>`).join('');
   $('#odds-bar').innerHTML = TIERS.map(t => `<i style="background:${t.color};flex:${t.weight}"></i>`).join('');
-  // Section band: jump between the stage, odds and contents; the lit tab follows the scroll position.
   const scroller = $('#main'), page = $('#case-page'), tabs = $$('#case-tabs [data-jump]'), secs = tabs.map(b => document.getElementById(b.dataset.jump));
   let hold = 0, spyFrame = 0;
   const bandHeight = () => $('.band', page).offsetHeight;

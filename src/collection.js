@@ -1,6 +1,5 @@
 import { DEFAULT, STYLES, fromHex } from './settings.js';
 
-// Standard five-tier weapon case ratio: 5:1 between each colour, 5:2 for red:gold.
 export const TIERS = [
   { id: 'blue', label: 'Mil-Spec', color: '#4b69ff', weight: 625 },
   { id: 'purple', label: 'Restricted', color: '#8847ff', weight: 125 },
@@ -13,7 +12,6 @@ export const odds = t => (t.weight * 100 / TOTAL).toFixed(2) + '%';
 export const tierOf = item => TIERS.find(t => t.id === item.tier);
 
 export function uniform(limit) {
-  // Rejection sampling keeps each integer ticket equally likely.
   const buf = new Uint32Array(1), cutoff = 2 ** 32 - (2 ** 32 % limit);
   do { crypto.getRandomValues(buf); } while (buf[0] >= cutoff);
   return buf[0] % limit;
@@ -74,7 +72,6 @@ export function randomCrosshair(screenHeight = DEFAULT.screenHeight) {
   };
 }
 function randomColor() {
-  // Vary around high-contrast hues without generating invisible reticles.
   const base = fromHex(pick(['00FF80', '55EBFF', 'FFFF62', 'FF77D2', 'A498FF', 'FFAF5C', 'F5FCFF', '83FF4F']));
   const [red, green, blue] = base.map(n => Math.min(255, Math.max(0, n + uniform(33) - 16)));
   return { red, green, blue };

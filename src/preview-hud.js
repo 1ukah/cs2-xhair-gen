@@ -1,11 +1,6 @@
-// Immersive in-game HUD preview.
-// Moves the live #viewport (map image, fire area and reticle rendered by editor.js) into a
-// full-window modal layer and draws a simulated spectator HUD around it. Nothing here renders
-// the crosshair: zoom, recoil, movement and style stay owned by the editor.
-// All match data below is invented locally. No real players, no network, no screenshots.
 
 const FLAG = 'xhairgenHud';
-const SHOT_MS = 135; // Same cadence the editor uses for its firing pulse.
+const SHOT_MS = 135;
 const byId = id => document.getElementById(id);
 const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const rand = n => Math.floor(Math.random() * n);
@@ -18,7 +13,6 @@ const SKULL = '<svg class="hud-skull" viewBox="0 0 24 24" aria-hidden="true"><pa
 const SHIELD = '<svg viewBox="0 0 32 36" aria-hidden="true"><path d="M16 2 4 6v11c0 8 5 13 12 17 7-4 12-9 12-17V6z"/></svg>';
 const CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg>';
 
-// team, callsign, weapon, magazine, reserve, health, armour, money, radar position, callout, avatar hue
 const SEED = [
   ['ct', 'Halcyon', 'FAMAS', 25, 90, 100, 100, 1850, [20, 24], 'B Site', 188],
   ['ct', 'Brisk', 'MP9', 30, 120, 74, 100, 950, [80, 24], 'A Site', 24],
@@ -32,8 +26,6 @@ const SEED = [
   ['t', 'Tallow', 'AK-47', 30, 90, 62, 100, 3050, [77, 86], 'Outside Long', 84],
 ];
 const RADIO = [['Smoke!', 'smoke'], ['Flashbang!', 'flash'], ['HE Grenade!', 'he'], ['Incendiary!', 'fire']];
-// Original abstract three-lane layout on a 100×100 grid. It is not any real map's radar; the
-// current map name only picks one of eight mirrored/rotated variants.
 const FLOOR = [
   [34, 82, 32, 10], [12, 82, 22, 8], [12, 40, 10, 42], [8, 14, 26, 26], [45, 36, 10, 46], [34, 26, 32, 10],
   [66, 82, 22, 8], [78, 44, 10, 38], [66, 12, 26, 32], [38, 8, 24, 12], [34, 16, 4, 6], [62, 14, 4, 6],
@@ -125,10 +117,8 @@ export function initPreviewHud() {
     stage.addEventListener('click', e => {
       const player = e.target.closest('[data-player]'), act = e.target.closest('[data-act]');
       if (player) watch(+player.dataset.player); else if (act) run(act.dataset.act); else return;
-      // After a pointer click hand focus back to the range so Space/Enter keep firing.
       if (e.detail && isOpen) fireArea.focus({ preventScroll: true });
     });
-    // Block trigger input while the magazine is being swapped (capture runs before editor.js).
     const gate = e => {
       if (reloadTimer && e.target === fireArea && (e.type === 'pointerdown' || e.key === ' ' || e.key === 'Enter')) { e.stopImmediatePropagation(); e.preventDefault(); }
     };
@@ -173,7 +163,7 @@ export function initPreviewHud() {
     if (act === 'map-next') proxy('next-map')?.click();
   }
 
-  /* Rendering */
+
   function drawRadar() {
     const label = mapLabel(), m = SYM[hash(label) % SYM.length], p = me();
     const box = ([x, y, w, h], cls) => {
@@ -233,7 +223,7 @@ export function initPreviewHud() {
   }
   function renderAll() { renderSlots(); renderClock(); renderStatus(); renderFeed(); drawRadar(); syncControls(); }
 
-  /* Local simulation: a looping, invented round. The watched player is never a casualty. */
+
   function tick() {
     if (document.hidden) return;
     ticks++;
@@ -282,7 +272,7 @@ export function initPreviewHud() {
     say(`Watching ${p.name}, ${side(p.team)}, ${p.weapon}`);
   }
 
-  /* Test fire: mirrors the editor's trigger so ammo, the shot counter and view punch follow real input. */
+
   function shot() {
     const p = me();
     if (p.ammo <= 0) return reload();
@@ -299,7 +289,6 @@ export function initPreviewHud() {
     firing = false; clearInterval(fireTimer); fireTimer = 0; stage?.classList.remove('is-firing');
   }
   function releaseFire() {
-    // Tell editor.js the trigger was let go (its own pointercancel handler ends the recoil pulse).
     if (firing) fireArea.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true }));
     stopFire();
   }
@@ -310,12 +299,12 @@ export function initPreviewHud() {
     releaseFire(); stage.classList.add('is-reloading'); say('Reloading');
     reloadTimer = setTimeout(() => {
       const need = p.mag - p.ammo;
-      if (p.reserve < need) p.reserve = p.cap; // Practice range: the reserve never runs dry.
+      if (p.reserve < need) p.reserve = p.cap;
       p.reserve -= need; p.ammo = p.mag; endReload(); renderAmmo(); say(`${p.weapon} loaded, ${p.ammo} rounds`);
     }, still() ? 500 : 1500);
   }
 
-  /* Open / close */
+
   function open({ fromHistory = false } = {}) {
     if (isOpen) return true;
     if (!viewport.isConnected || !viewport.getClientRects().length) return false;
@@ -323,11 +312,9 @@ export function initPreviewHud() {
     const active = document.activeElement;
     opener = active instanceof HTMLElement && active !== document.body ? active : toggleEl();
     scrollPos = [window.scrollX, window.scrollY];
-    // Hold the editor layout open while the real viewport is away.
     placeholder = document.createElement('div'); placeholder.className = 'hud-placeholder'; placeholder.setAttribute('aria-hidden', 'true');
     placeholder.style.height = `${viewport.getBoundingClientRect().height}px`;
     viewport.before(placeholder);
-    // Hide the editor's own overlay chrome so no invisible control can be hit or focused.
     const core = [mapImage, fireArea, aim];
     concealed = [...viewport.children].filter(c => !core.some(n => c === n || c.contains(n)) && !(c.classList.contains('view-shade') && viewport.classList.contains('scoped')));
     for (const c of concealed) c.setAttribute('data-hud-hidden', '');
@@ -353,7 +340,7 @@ export function initPreviewHud() {
     fireArea.focus({ preventScroll: true });
     say(`HUD preview on ${mapLabel()}. Simulated match. Hold Space or the mouse to fire, Escape to close.`);
     if (!fromHistory && !flagged(history.state)) {
-      try { history.pushState({ ...(history.state && typeof history.state === 'object' ? history.state : {}), [FLAG]: true }, ''); } catch { /* History is optional. */ }
+      try { history.pushState({ ...(history.state && typeof history.state === 'object' ? history.state : {}), [FLAG]: true }, ''); } catch { }
     }
     document.dispatchEvent(new CustomEvent('hud:open'));
     return true;
@@ -380,8 +367,7 @@ export function initPreviewHud() {
     if (!fromHistory && flagged(history.state)) history.back();
   }
 
-  // A reload must not restore into the overlay: drop a stale marker left on this history entry.
-  if (flagged(history.state)) { try { const { [FLAG]: _, ...rest } = history.state; history.replaceState(rest, ''); } catch { /* History is optional. */ } }
+  if (flagged(history.state)) { try { const { [FLAG]: _, ...rest } = history.state; history.replaceState(rest, ''); } catch { } }
   window.addEventListener('popstate', e => {
     if (!flagged(e.state)) close({ fromHistory: true });
     else if (!isOpen && !document.querySelector('dialog[open]')) open({ fromHistory: true });

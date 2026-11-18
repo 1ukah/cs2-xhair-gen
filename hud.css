@@ -1,4 +1,3 @@
-/* Immersive in-game HUD preview (src/preview-hud.js). Everything is scoped to #hud-stage. */
 html.hud-lock{overflow:hidden!important}
 .hud-placeholder{display:block;visibility:hidden;flex:none;pointer-events:none}
 [data-hud-hidden]{display:none!important}
@@ -20,7 +19,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 #hud-stage i,#hud-stage em,#hud-stage u{font-style:normal;text-decoration:none}
 #hud-stage [hidden]{display:none!important}
 
-/* The real editor viewport, stretched to the window. */
 #hud-stage>#viewport{position:absolute!important;inset:0!important;z-index:0;width:auto!important;height:auto!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;margin:0!important;border:0!important;border-radius:0!important;transform:none!important;overflow:hidden;isolation:isolate;background:#2b3236}
 #hud-stage #map-image{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;pointer-events:none;user-select:none}
 #hud-stage #fire-area{position:absolute;inset:0;z-index:1;width:100%;height:100%;padding:0;border:0;border-radius:0;background:none;cursor:crosshair;touch-action:none;-webkit-tap-highlight-color:transparent}
@@ -38,7 +36,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-layer .ct{color:var(--hud-ct)}.hud-layer .t{color:var(--hud-t)}
 .hud-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-/* Close and mode label */
 .hud-close{position:absolute;top:calc(.5em + var(--st));right:calc(.6em + var(--sr));display:flex;align-items:center;gap:.4em;min-width:2.6em;height:2.6em;padding:0 .7em!important;background:#10161ad9!important;border:1px solid #ffffff4d!important}
 .hud-close svg{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .hud-close kbd{font-size:max(10px,.72em);color:#c9d1d4;letter-spacing:.08em;text-transform:uppercase}
@@ -47,7 +44,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-mode b{font-size:max(11px,.86em);letter-spacing:.09em}
 .hud-mode span{font-size:max(10px,.7em);color:var(--hud-accent);letter-spacing:.08em}
 
-/* Radar and callout */
 .hud-radar{position:absolute;top:calc(.4em + var(--st));left:calc(.5em + var(--sl));width:18em}
 .hud-radar svg{display:block;width:100%;aspect-ratio:1;background:#1b2226d9;border:1px solid #b9cf7a73;box-shadow:0 0 0 1px #0006}
 .hud-radar .rf{fill:#a2aaa6;opacity:.74}
@@ -63,7 +59,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-callout strong{font-size:1.25em;color:var(--hud-accent)}
 .hud-callout span{font:600 max(10px,.68em) var(--hud-ui);color:#e6eaea;letter-spacing:.06em;text-transform:uppercase}
 
-/* Score strip */
 .hud-score{position:absolute;top:calc(.3em + var(--st));left:50%;transform:translateX(-50%);display:flex;align-items:flex-start;gap:.15em}
 .hud-team{display:flex;gap:.15em}
 .hud-player{display:flex;flex-direction:column;align-items:stretch;width:3.5em;padding:0 0 .35em!important;text-align:center;background:linear-gradient(#10161ad1,#10161a70 72%,transparent)!important;--team:var(--hud-ct)}
@@ -95,7 +90,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-alive{display:grid;grid-template-columns:1fr 1fr;font-size:max(9px,.66em);color:#cfd6d8}
 .hud-alive span::before{content:"";display:inline-block;width:.55em;height:.75em;margin-right:.3em;vertical-align:-.06em;border-radius:.3em .3em 0 0;background:currentColor;opacity:.8}
 
-/* Round banner, kill feed, radio */
 .hud-banner{position:absolute;top:calc(13em + var(--st));left:50%;transform:translateX(-50%);min-width:21em;padding:.5em 2.4em .55em;text-align:center;background:#30373ce6;border-inline:.2em solid var(--side);--side:var(--hud-ct);animation:hud-in .22s ease-out}
 .hud-banner[data-side="t"]{--side:var(--hud-t)}
 .hud-banner strong{display:block;font-size:2.1em;letter-spacing:.3em;margin-right:-.3em;text-transform:uppercase;color:var(--side)}
@@ -108,7 +102,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
 .hud-chat i{color:#93e06d}
 .hud-chat .smoke{color:#b9f08a}.hud-chat .flash{color:#8fc7ff}.hud-chat .he{color:#ff5a4f}.hud-chat .fire{color:#ffa63d}
 
-/* Bottom: money, vitals, active player, ammo, controls */
 .hud-bottom{position:absolute;inset:auto 0 0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:1em;padding:0 calc(1.2em + var(--sr)) calc(.3em + var(--sb)) calc(1.2em + var(--sl))}
 .hud-left{min-width:0;padding-bottom:1em}
 .hud-money{font-size:2.15em;color:var(--hud-accent)}
@@ -166,7 +159,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   #hud-stage *,#hud-stage *::before,#hud-stage *::after{animation:none!important;transition:none!important}
 }
 
-/* Compact: tablets, short windows and landscape phones */
 @media(max-width:900px),(max-height:520px){
   .hud-radar{width:12em}
   .hud-player{width:2.6em;padding-bottom:0!important}
@@ -190,7 +182,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   .hud-face{width:3.1em;height:3.1em;margin-top:-.4em}.hud-face small{display:none}
   .hud-banner{top:calc(5.6em + var(--st))}
 }
-/* Narrow portrait phones: score row first, radar and close on the row beneath */
 @media(max-width:700px){
   .hud-player{width:2.2em}.hud-ava{height:2.2em;border-width:.1em}
   .hud-team,.hud-score{gap:.12em}
@@ -211,7 +202,6 @@ dialog#hud-stage::backdrop{background:#000;backdrop-filter:none}
   .hud-keys{justify-content:center}
 }
 @media(max-width:350px){dialog#hud-stage{--hud:9.6px}.hud-weapon span{display:none}}
-/* Touch: full-size tap targets, no keyboard legends */
 @media(pointer:coarse),(max-width:700px){
   .hud-close{min-width:40px;min-height:40px}.hud-close kbd{display:none}
   .hud-mode{right:calc(.6em + 48px + var(--sr))}

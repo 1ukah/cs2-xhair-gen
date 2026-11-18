@@ -11,7 +11,7 @@ const FIRST = GROUPS[0][0];
 export function initEditor() {
   const saved = load('profile', {}), prefs = load('preview', {});
   let core = { ...DEFAULT }, extra = restoreExtras(saved?.extra);
-  if (typeof saved?.code === 'string') { try { core = decode(saved.code); } catch { /* Start with Valve defaults. */ } }
+  if (typeof saved?.code === 'string') { try { core = decode(saved.code); } catch { } }
   let group = FIRST, mapIndex = MAPS.findIndex(([m]) => m === prefs?.map), zoom = [1, 2, 4].includes(prefs?.zoom) ? prefs.zoom : 1;
   if (mapIndex < 0) mapIndex = 0;
   let active = true, moving = false, firing = false, startFire = 0, endFire = -Infinity, frame = 0, pendingSave = 0;
@@ -59,7 +59,6 @@ export function initEditor() {
     img.src = `./assets/maps/${id}.webp`; img.alt = `${name} crosshair preview`;
     $('#map-name').textContent = name; $('#map-id').textContent = `DE_${id.toUpperCase()}`;
     $('#map-count').textContent = `${mapIndex + 1} / ${MAPS.length}`;
-    // The frosted page backdrop follows the scene in the preview.
     document.documentElement.style.setProperty('--map', `url("./assets/maps/${id}.webp")`);
     if (persist) store('preview', { map: id, zoom });
   }
@@ -68,7 +67,6 @@ export function initEditor() {
     if (persist) store('preview', { map: MAPS[mapIndex][0], zoom });
     preview();
   }
-  // One continuous list, as in the game menu. The band tabs jump between its sections.
   const fields = () => GROUPS.flatMap(([id]) => visibleFields(id, core, extra));
   const needle = () => query.trim().toLowerCase();
   function sections() {

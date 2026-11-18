@@ -32,7 +32,6 @@ const paths = {
   link: '<path d="m10 14 4-4m-5 6-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 0 2-2a4 4 0 1 1 6 6l-4 4a4 4 0 0 1-6 0"/>',
   search: '<circle cx="10" cy="10" r="6.2" stroke-width="2.3"/><path stroke-width="2.6" d="m15 15 6 6"/>',
   history: '<path stroke-width="2" d="M4 12a8 8 0 1 0 2.4-5.7M3.5 3.5v4h4M12 7.8V12l3 2"/>',
-  // Solid glyphs for the Panorama navigation strip and rail.
   home: solid('M12 3 2 12h3v8.5h5.2v-6h3.6v6H19V12h3z'),
   user: solid('M12 3.5a4.2 4.2 0 1 0 0 8.4 4.2 4.2 0 0 0 0-8.4zM4 20.5c0-4.1 3.5-6.4 8-6.4s8 2.3 8 6.4z'),
   info: solid('M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.3 5h2.6v2.6h-2.6zm0 4.2h2.6V17h-2.6z'),
@@ -53,7 +52,6 @@ export function store(key, value) {
   try { localStorage.setItem(`xhairgen.1.${key}`, JSON.stringify(value)); return true; }
   catch { return false; }
 }
-// Section bands: the tab that is lit follows whichever section sits at the top of its scroller.
 export function activeSection(scroller, sections, offset = 14) {
   if (!sections.length) return null;
   if (scroller.scrollTop > 0 && scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2) return sections.at(-1);
@@ -103,7 +101,7 @@ export function unlockAudio() {
   try {
     audio ||= new (window.AudioContext || window.webkitAudioContext)();
     if (audio.state === 'suspended') audio.resume().catch(() => {});
-  } catch { /* Audio is optional. */ }
+  } catch { }
 }
 export function tone(hz = 850, duration = 0.036, type = 'sine', delay = 0) {
   if (!sound || document.hidden) return;

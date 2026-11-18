@@ -1,7 +1,5 @@
 import { cs2CrosshairToConVars, decodeCs2CrosshairShareCode, encodeCs2Crosshair, isCs2ShareCode } from '../vendor/csgo-sharecode/crosshair.js';
 
-// IDs, order, dependencies and slider bounds from Panorama's settings_crosshair.xml
-// and settingsmenu_crosshair.js. Menu bounds can be narrower than console bounds.
 export const STYLES = [
   [4, 'Static Cross'], [3, 'Static Circle'], [8, 'Static Square'], [6, 'Dot Only'],
   [9, 'Static Quadrant'], [0, 'Dynamic Cross'], [1, 'Dynamic Circle'],

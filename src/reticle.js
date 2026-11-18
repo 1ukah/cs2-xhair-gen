@@ -1,8 +1,6 @@
 import { clamp, hex } from './settings.js';
 
 let maskSerial = 0;
-// Geometry is shared by the map monitor, inventory, inspection and both reel layers.
-// Units are pixels at the profile's reference height. Movement is a visual sample.
 export function reticle(c, movement = 0, shot = 0) {
   const t = Math.max(1, c.thickness), style = c.style, gap = c.gap;
   const spread = Math.min(64 + c.dynamicSpreadLimit, Math.max(24 * movement, 80 * shot));
@@ -59,7 +57,6 @@ export function reticle(c, movement = 0, shot = 0) {
     const border = c.outlineMode === 2 ? [[-1, 0], [0, -1], [-1, -1]].map(([x,y]) => `<g transform="translate(${x} ${y})">${edgeShapes}</g>`).join('') : edgeShapes;
     let mask = '';
     if (c.alpha < 255 || parts.some(p => p.a < 1)) {
-      // Punch out the ink area so a transparent fill never exposes a solid outline backing.
       const id = `reticle-edge-${++maskSerial}`, r = Math.ceil(Math.abs(gap) + c.length + t + Math.max(24, spread) + 4);
       const box = `x="${-r}" y="${-r}" width="${2*r}" height="${2*r}"`;
       outline = `<defs><mask id="${id}" maskUnits="userSpaceOnUse" ${box}><rect ${box} fill="white"/>${layer('black', false, true)}</mask></defs>`;

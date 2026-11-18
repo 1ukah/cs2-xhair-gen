@@ -172,7 +172,6 @@ input[type="range"]::-moz-range-thumb{background:#f2c27d;border:1px solid #ffdd9
 .panel-meta{color:var(--muted);font-size:9px}
 .noscript{padding:22px;margin:20px 0}
 
-/* Container inspection, opening reel and item inventory */
 .series-badge{gap:8px;padding:7px 10px;border:1px solid #665b47;background:#aa824315;color:#dcc49e;font-size:9px}.series-badge b{color:var(--amber)}
 .case-grid{grid-template-columns:minmax(0,1.85fr) minmax(285px,1fr)}
 .case-stage{position:relative;overflow:hidden;isolation:isolate;height:clamp(277px,24vw,362px);background:radial-gradient(ellipse at 51% 64%,#5d5440 0%,#343a37 34%,#252c2e 64%,#1d262c 100%);border-bottom:1px solid var(--line)}
@@ -240,7 +239,6 @@ input[type="range"]::-moz-range-thumb{background:#f2c27d;border:1px solid #ffdd9
 .reward h3{font:italic 700 43px/1.07 var(--display);text-transform:uppercase;margin:.12em 0}
 .reward p{font-size:13px;color:#ced5d9}
 
-/* Panorama-style popups */
 dialog{position:fixed;width:min(465px,calc(100% - 28px));max-height:min(88dvh,780px);color:var(--text);background:#242d34;border:1px solid #58636c;border-top:2px solid var(--amber);border-radius:3px;padding:0;box-shadow:0 24px 85px #020609b3;overflow:auto}
 dialog.wide{width:min(740px,calc(100% - 28px))}
 dialog::backdrop{background:#080d13ba;backdrop-filter:blur(5px)}

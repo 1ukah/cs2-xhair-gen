@@ -147,4 +147,3 @@ cl_ironsight_usecrosshaircolor "${Number(crosshair.scopeDotUseCrosshairColor)}"
 export function cs2CrosshairToConVars(crosshair) {
     return crosshairV1ToConVars(crosshair);
 }
-//# sourceMappingURL=crosshair.js.map

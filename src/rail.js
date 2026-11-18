@@ -1,7 +1,5 @@
 import { $, $$ } from './ui.js';
 
-// Right-hand rail. Docked on wide windows (icon column that widens into a flyout),
-// an off-canvas drawer with a scrim on narrow ones. Content is rendered by case.js.
 export function initRail() {
   const rail = $('#rail'), toggle = $('#rail-toggle'), opener = $('#rail-open'), scrim = $('#rail-scrim');
   const heads = $$('[data-rail-sec]', rail), shell = [$('#main'), $('.topbar')];
@@ -26,7 +24,6 @@ export function initRail() {
   }
   function show(sec = api.prefer()) {
     open = true; section = sec || null; paint();
-    // The drawer opens from a topbar button that is now behind the scrim: move focus inside.
     if (drawer.matches && !rail.contains(document.activeElement)) toggle.focus({ preventScroll: true });
   }
   function hide(restore = true) {
@@ -35,7 +32,6 @@ export function initRail() {
     open = false; paint();
     if (restore && (inside || wasDrawer)) (wasDrawer ? opener : toggle).focus({ preventScroll: true });
   }
-  // Close only where the flyout covers the page content.
   function dismiss() { if (open && tight.matches) hide(false); }
   toggle.onclick = opener.onclick = () => (open ? hide() : show());
   $('#rail-close').onclick = scrim.onclick = () => hide();
