@@ -31,7 +31,7 @@ export function initCase(equip) {
   }
   const view = { tier: '', picking: false, picked: new Set(), armed: false };
   let result = raw?.pending === true && drops.length ? drops[0] : null;
-  let pending = false, run = null, cycle = 0, turn = 0;
+  let pending = false, run = null, cycle = 0, turn = 0, auto = false, next = 0;
   const reel = $('#reel'), track = $('.reel-track', reel), reward = $('#reward'), actions = $('#case-actions');
   const byId = id => drops.find(d => d.id === +id);
   const persist = () => store('case', { drops: drops.map(d => ({ tier: d.tier, code: encode(d.core), ...(d.fav && { fav: true }) })), pending });
@@ -41,6 +41,13 @@ export function initCase(equip) {
   }
   const badge = () => { $('#inventory-count').textContent = count(drops.length); $('#inventory').setAttribute('aria-label', `Inventory, ${drops.length} drops`); };
   const openButton = `<button type="button" class="btn go" data-open>${icon('key')}Open</button>`;
+  function controls() {
+    const toggle = `<button type="button" class="btn secondary" data-auto aria-pressed="${auto}">${icon('repeat', 17)}Auto</button>`;
+    const held = actions.contains(document.activeElement) && document.activeElement.hasAttribute('data-auto');
+    if (run) actions.innerHTML = `${toggle}<button type="button" class="btn secondary" data-skip>Skip${icon('chevrons')}</button>`;
+    else actions.innerHTML = `${result ? `<button type="button" class="icon-btn" data-copy-drop aria-label="Copy share code">${icon('copy')}</button><button type="button" class="btn secondary" data-equip>${icon('target', 17)}Equip</button>` : ''}${toggle}${openButton}`;
+    if (held) $('[data-auto]', actions).focus();
+  }
   function fill(winner) {
     const tiles = Array.from({ length: REEL.tiles }, () => drawItem());
     if (winner) tiles[REEL.winner] = winner;
@@ -49,7 +56,7 @@ export function initCase(equip) {
   function idle() {
     reward.hidden = true; reel.hidden = false;
     fill(); track.style.transform = offset(REEL.start, 0.5);
-    actions.innerHTML = openButton;
+    controls();
   }
   function use(d) {
     if (modal().open) modal().close();
@@ -113,7 +120,7 @@ export function initCase(equip) {
     reel.hidden = true; reward.hidden = false;
     reward.style.setProperty('--rarity', t.color);
     reward.innerHTML = `<div class="reward-art">${specimen(result.core, 94)}</div><div class="reward-banner"><h2>${title(result)}</h2><p>${t.label}</p></div>`;
-    actions.innerHTML = `<button type="button" class="icon-btn" data-copy-drop aria-label="Copy share code">${icon('copy')}</button><button type="button" class="btn secondary" data-equip>${icon('target', 17)}Equip</button>${openButton}`;
+    controls();
   }
   function finish(audible = true) {
     if (!run) return;
@@ -121,14 +128,16 @@ export function initCase(equip) {
     previous.timers.forEach(clearTimeout); previous.animation?.cancel();
     pending = false; persist(); showResult();
     if (audible) { const base = 320 + TIERS.indexOf(tierById(result.tier)) * 90; tone(base, 0.18); tone(base * 1.5, 0.25, 'sine', 0.10); }
+    if (auto) next = setTimeout(open, 1300);
   }
   function open() {
+    clearTimeout(next);
     if (run) return;
     result = { id: ++serial, ...drawItem() };
     drops.unshift(result); prune(drops, LIMIT);
     pending = true; persist(); badge(); unlockAudio();
     run = { timers: [], animation: null };
-    actions.innerHTML = `<button type="button" class="btn secondary" data-skip>Skip${icon('chevrons')}</button>`;
+    controls();
     if (reduced()) { finish(); return; }
     reward.hidden = true; reel.hidden = false; fill(result);
     const final = offset(REEL.winner, (10 + uniform(81)) / 100);
@@ -140,7 +149,11 @@ export function initCase(equip) {
   actions.onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.hasAttribute('data-open')) open();
-    if (b.hasAttribute('data-skip')) finish();
+    else if (b.hasAttribute('data-skip')) finish();
+    else if (b.hasAttribute('data-auto')) {
+      auto = !auto; clearTimeout(next);
+      if (auto && !run) open(); else controls();
+    }
     if (b.hasAttribute('data-equip') && result) use(result);
     if (b.hasAttribute('data-copy-drop') && result) copyText(encode(result.core));
   };
@@ -158,6 +171,10 @@ export function initCase(equip) {
   if (result) { persist(); showResult(); } else idle();
   return {
     activate() { animate(true); },
-    deactivate() { if (run) finish(false); animate(false); },
+    deactivate() {
+      const was = auto; auto = false; clearTimeout(next);
+      if (run) finish(false); else if (was) controls();
+      animate(false);
+    },
   };
 }
