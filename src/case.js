@@ -5,7 +5,7 @@ import { $, $$, copyText, dialog, icon, load, modal, notice, reduced, store, ton
 
 const LIMIT = 300;
 const count = n => String(n).padStart(2, '0');
-const REEL = { tiles: 38, start: 2, winner: 34, duration: 6000, ease: 'cubic-bezier(0.075, 0.82, 0.165, 1)' };
+const REEL = { tiles: 44, start: 6, winner: 38, duration: 6000, ease: 'cubic-bezier(0.075, 0.82, 0.165, 1)' };
 const TICKS = [...Array.from({ length: 23 }, (_, i) => Math.round(i * 62.5)), 1351, 1483, 1620, 1701, 1786, 1872, 2003, 2154, 2313, 2466, 2615, 2773, 2941, 3104, 3339, 3630, 3953, 4385, 5004];
 const palette = t => `--rarity:${t.color}`;
 const title = d => styleName(d.core.style);
