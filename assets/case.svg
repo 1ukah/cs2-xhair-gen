@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 284" fill="none">
+  <title>Crosshair Case — Series 01</title>
+  <defs>
+    <linearGradient id="front" x2=".2" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#ffcc59"/><stop offset=".5" stop-color="#d79a2d"/><stop offset="1" stop-color="#a66b1e"/></linearGradient>
+    <linearGradient id="side" x2=".8" y2="1"><stop stop-color="#bd8729"/><stop offset="1" stop-color="#695025"/></linearGradient>
+    <linearGradient id="top" x2=".6" y2="1"><stop stop-color="#ffe09b"/><stop offset=".55" stop-color="#edb147"/><stop offset="1" stop-color="#d2922a"/></linearGradient>
+    <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#4f5351"/><stop offset=".28" stop-color="#353735"/><stop offset=".65" stop-color="#1a1d1e"/><stop offset="1" stop-color="#41403b"/></linearGradient>
+    <radialGradient id="shadow"><stop stop-color="#05070a" stop-opacity=".8"/><stop offset="1" stop-color="#05070a" stop-opacity="0"/></radialGradient>
+    <pattern id="grain" width="9" height="7" patternUnits="userSpaceOnUse"><path d="m1 4 2-1m4 3 1-1" stroke="#683f12" opacity=".2" stroke-width=".7"/></pattern>
+    <g id="rib"><path d="M0 0h11l2 4v63l-3 5H0l-2-5V4z" fill="#9a6922"/><path d="M1 1h8l2 4v60l-2 3H1l-1-3V4z" fill="#e1a439"/><path d="M1 3v59" stroke="#f9c866" stroke-width="2"/></g>
+    <g id="latch"><path d="M-2-4h28v31l-4 5H1l-3-4z" fill="#805923"/><rect width="23" height="28" rx="2" fill="url(#metal)" stroke="#21231f" stroke-width="2"/><path d="M2 5h19v13H2z" fill="#41423d"/><path d="M4 7h15v3H4zm1 8h13v3H5z" fill="#222422"/><path d="M3 2h17M3 21h17" stroke="#85816b" stroke-width="2"/><circle cx="11.5" cy="24" r="1.5" fill="#a6a08a"/></g>
+  </defs>
+  <ellipse cx="222" cy="243" rx="193" ry="34" fill="url(#shadow)"/>
+  <g id="crate-body">
+    <g transform="matrix(.85 -.64 0 1 337 123)">
+      <rect y="18" width="74" height="109" rx="4" fill="url(#side)" stroke="#6e4e25" stroke-width="2"/>
+      <path d="M5 42h63v67H5z" stroke="#6a4e25" stroke-width="4"/>
+      <path d="M8 47h58v55H8z" stroke="#ca963b" stroke-width="2"/>
+      <path d="M11 51h10v48H11zm22 0h8v48h-8zm21 0h9v48h-9z" fill="#a77a2d" stroke="#755623"/>
+      <path d="M0 112h74v11H0z" fill="#ad7b2d"/><path d="M0 116h74" stroke="#d3a04a"/>
+      <path d="M0 31h74" stroke="#493b28" stroke-width="4"/>
+    </g>
+    <g transform="matrix(1 .085 0 1 41 98)">
+      <rect y="17" width="296" height="111" rx="4" fill="url(#front)" stroke="#785723" stroke-width="2"/>
+      <rect x="3" y="38" width="290" height="83" fill="url(#grain)"/>
+      <path d="M0 29h296v7H0z" fill="#574528"/><path d="M1 37h293" stroke="#f6c363" stroke-width="2"/>
+      <path d="M14 47h268v59l-6 6H20l-6-6z" fill="#c58e31" stroke="#af7926" stroke-width="3"/>
+      <path d="M18 49h259v55H18z" fill="url(#grain)"/><path d="M19 108h256" stroke="#f4bc57" stroke-width="2"/>
+      <use href="#rib" x="19" y="40"/><use href="#rib" x="39" y="40"/><use href="#rib" x="247" y="40"/><use href="#rib" x="267" y="40"/>
+      <path d="M0 116h296v7H0z" fill="#ce9433"/><path d="M3 118h289" stroke="#f0bb5d" stroke-width="2"/>
+      <g fill="#413827" transform="translate(122 47)">
+        <path d="M0 0h15v4H4v11H0zm29 0h15v15h-4V4H29zM0 29h4v11h11v4H0zm40 0h4v15H29v-4h11z"/>
+        <path d="m22 7 15 15-15 15L7 22zm0 7-8 8 8 8 8-8z" fill-rule="evenodd"/><path d="M20 19h4v6h-4z"/>
+      </g>
+      <text x="145" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.8" font-weight="bold" letter-spacing="2.6" fill="#504027">CROSSHAIR LAB</text>
+      <g fill="#594b2e"><path d="M67 88h28v2H67zm0 5h19v2H67zm0 5h24v1H67z"/><path d="m211 91 6-10 6 10zm1.5-2h9l-4.5-7z" fill-rule="evenodd"/></g>
+      <path d="M5 106h7v20H5zm278 0h8v20h-8z" fill="#8a6a36"/>
+    </g>
+  </g>
+  <g id="crate-lid">
+    <g transform="matrix(1 .085 .85 -.64 41 98)">
+      <rect width="296" height="74" rx="4" fill="url(#top)" stroke="#916b31" stroke-width="2"/>
+      <rect x="9" y="8" width="278" height="58" rx="3" stroke="#ffe1a0" stroke-width="3"/>
+      <rect x="21" y="16" width="254" height="43" rx="3" fill="#e4aa42" stroke="#b78732" stroke-width="2"/>
+      <g fill="#eeba58" stroke="#bf8d36" stroke-width="1.5"><path d="M30 20h11v34H30zm20 0h11v34H50zm173 0h11v34h-11zm20 0h11v34h-11z"/></g>
+      <path d="M79 28h106v18H79z" fill="#6a552d"/><text x="86" y="41" fill="#f1cf7a" font-family="Arial,sans-serif" font-weight="bold" font-size="10" letter-spacing="1.5">RETICLE SUPPLY</text>
+      <path d="M192 28h2v17h-2zm4 0h1v17h-1zm4 0h3v17h-3zm5 0h2v17h-2z" fill="#816432"/>
+    </g>
+    <g transform="matrix(.85 -.64 0 1 337 123)"><path d="M0 0h74v26H0z" fill="url(#side)" stroke="#7e5b29" stroke-width="2"/><path d="M0 5h74" stroke="#d6a54a" stroke-width="2"/></g>
+    <g transform="matrix(1 .085 0 1 41 98)">
+      <rect width="296" height="27" rx="2" fill="url(#front)" stroke="#a57930" stroke-width="2"/>
+      <path d="M3 3h288m-285 20h284" stroke="#f7c66b" stroke-width="2"/>
+      <use href="#latch" x="53" y="8"/><use href="#latch" x="218" y="8"/>
+      <path d="M107 11h11v8h60v-8h11v15l-4 4h-74l-4-4z" fill="url(#metal)" stroke="#3c382e" stroke-width="2"/>
+      <path d="M120 19h55" stroke="#777263" stroke-width="2"/>
+      <g fill="#655339" stroke="#e8b95f"><circle cx="9" cy="13" r="2.4"/><circle cx="285" cy="13" r="2.4"/></g>
+    </g>
+  </g>
+</svg>

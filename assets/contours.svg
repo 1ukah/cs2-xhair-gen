@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" fill="none">
+  <defs><path id="c" d="M-80 165c56 20 88-25 127-17s52 51 107 28 60-54 112-48c70 9 69-62 133-57s76 51 119 22 67-29 115 7"/></defs>
+  <g stroke="#b5af89" stroke-opacity=".38" stroke-width=".8" transform="rotate(-17 300 150)">
+    <use href="#c" y="-100"/><use href="#c" y="-93"/><use href="#c" y="-86"/><use href="#c" y="-79"/><use href="#c" y="-72"/><use href="#c" y="-65"/><use href="#c" y="-58"/><use href="#c" y="-51"/><use href="#c" y="-44"/><use href="#c" y="-37"/><use href="#c" y="-30"/><use href="#c" y="-23"/><use href="#c" y="-16"/><use href="#c" y="-9"/><use href="#c" y="-2"/><use href="#c" y="5"/><use href="#c" y="12"/><use href="#c" y="19"/><use href="#c" y="26"/><use href="#c" y="33"/><use href="#c" y="40"/><use href="#c" y="47"/><use href="#c" y="54"/><use href="#c" y="61"/><use href="#c" y="68"/><use href="#c" y="75"/><use href="#c" y="82"/><use href="#c" y="89"/><use href="#c" y="96"/><use href="#c" y="103"/><use href="#c" y="110"/><use href="#c" y="117"/><use href="#c" y="124"/><use href="#c" y="131"/><use href="#c" y="138"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240" width="720" height="240" fill="none">
+  <title>Topographic contour texture</title>
+  <defs>
+    <path id="a" vector-effect="non-scaling-stroke" d="M100 0C100 45 62 78 18 92C-28 106-80 84-98 38C-112-2-92-54-52-80C-12-106 44-98 76-66C94-48 100-24 100 0Z"/>
+    <path id="b" vector-effect="non-scaling-stroke" d="M120 10C118 52 70 70 30 60C-6 51-30 84-70 78C-112 72-130 30-116-8C-102-46-60-70-20-58C10-49 34-80 72-72C104-65 122-28 120 10Z"/>
+  </defs>
+  <g stroke="#e6eef4" stroke-opacity=".1" stroke-width="1">
+    <g transform="translate(118 118)">
+      <use href="#a" transform="scale(1.1)"/><use href="#a" transform="rotate(5) scale(.95)"/><use href="#a" transform="rotate(11) scale(.8)"/><use href="#a" transform="rotate(18) scale(.65)"/><use href="#a" transform="rotate(27) scale(.5)"/><use href="#a" transform="rotate(38) scale(.35)"/><use href="#a" transform="rotate(52) scale(.2)"/><use href="#a" transform="rotate(70) scale(.08)"/>
+    </g>
+    <g transform="translate(362 120)">
+      <use href="#b"/><use href="#b" transform="rotate(-3) scale(.87)"/><use href="#b" transform="rotate(-7) scale(.74)"/><use href="#b" transform="rotate(-12) scale(.61)"/><use href="#b" transform="rotate(-18) scale(.48)"/><use href="#b" transform="rotate(-26) scale(.35)"/><use href="#b" transform="rotate(-36) scale(.22)"/><use href="#b" transform="rotate(-50) scale(.1)"/>
+    </g>
+    <g transform="translate(606 124) rotate(140)">
+      <use href="#a" transform="scale(1.04)"/><use href="#a" transform="rotate(-6) scale(.9)"/><use href="#a" transform="rotate(-13) scale(.76)"/><use href="#a" transform="rotate(-21) scale(.62)"/><use href="#a" transform="rotate(-30) scale(.48)"/><use href="#a" transform="rotate(-41) scale(.34)"/><use href="#a" transform="rotate(-55) scale(.2)"/><use href="#a" transform="rotate(-72) scale(.08)"/>
+    </g>
+    <path d="M0 14C60 2 120 30 190 16S300-4 362 22 470 34 540 12 660 0 720 14M0 228C70 240 130 212 196 226S306 244 362 220 476 208 546 230 664 240 720 228"/>
+  </g>
+</svg>
