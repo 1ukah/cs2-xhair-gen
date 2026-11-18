@@ -2,25 +2,6 @@
 
 xhairgen is a crosshair generator and a case opener for Counter-Strike 2. It is one static page. It has no build step and no server code. All data stays in your browser.
 
-## Publish on GitHub Pages
-
-1. Create an empty public repository on GitHub. Do not add a README, a license or a `.gitignore` file.
-2. Open a terminal in this folder.
-3. Connect the folder to the repository and push the `master` branch:
-
-   ```sh
-   git remote add origin https://github.com/USERNAME/REPOSITORY.git
-   git push -u origin master
-   ```
-
-4. On GitHub, open **Settings → Pages** in the repository.
-5. Below **Build and deployment**, set **Source** to **Deploy from a branch**.
-6. Select the `master` branch and the `/ (root)` folder.
-7. Select **Save**.
-8. Wait approximately one minute. Then open `https://USERNAME.github.io/REPOSITORY/`.
-
-The file `.nojekyll` tells GitHub Pages to publish the files as they are. All paths are relative, thus the page works in a repository subfolder. The address `#editor` opens the generator. The address `#case` opens the case.
-
 ## Run on your computer
 
 1. Open a terminal in this folder.
@@ -74,21 +55,6 @@ A random integer selects the rarity. Then the page makes a random crosshair with
 - **Delete** shows the number of drops. Select it a second time to confirm.
 - Select a drop to see its share code, to equip it, to make it a favorite or to delete it.
 
-## Development
-
-- `src/settings.js` contains the menu and the export format.
-- `src/reticle.js` draws the crosshair.
-- `src/collection.js` contains the rarity weights and the generators.
-- `src/editor.js`, `src/color.js` and `src/case.js` control the two pages.
-- `src/ui.js` contains the shared interface parts.
-- `styles.css` contains the interface styles.
-
-To do the tests, you must have Node.js 22 or later. Run this command:
-
-```sh
-npm test
-```
-
 ## Sources and credits
 
 - [Valve release notes](https://www.counter-strike.net/news/updates): crosshair changes of September 22–30, 2026.
@@ -99,3 +65,7 @@ npm test
 - Fonts: [Barlow](https://github.com/jpt/barlow) ([license](assets/fonts/OFL.txt)) and [Saira Condensed](https://github.com/Omnibus-Type/Saira) ([license](assets/fonts/OFL-SairaCondensed.txt)), with the SIL Open Font License.
 
 Counter-Strike and its map pictures are the property of Valve. This project is an independent fan tool.
+
+## License
+
+This project has the [GNU General Public License, version 3](LICENSE). The fonts and the share code modules keep their own licenses.
