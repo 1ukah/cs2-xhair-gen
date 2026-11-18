@@ -6,5 +6,6 @@
   "description": "A static CS2 crosshair generator and case opener.",
   "scripts": {
     "test": "node --test"
-  }
+  },
+  "license": "GPL-3.0-only"
 }
