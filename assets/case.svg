@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 284" fill="none">
-  <title>Crosshair Case — Series 01</title>
+  <title>xhairgen Case — Series 01</title>
   <defs>
     <linearGradient id="front" x2=".2" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#ffcc59"/><stop offset=".5" stop-color="#d79a2d"/><stop offset="1" stop-color="#a66b1e"/></linearGradient>
     <linearGradient id="side" x2=".8" y2="1"><stop stop-color="#bd8729"/><stop offset="1" stop-color="#695025"/></linearGradient>
@@ -32,7 +32,7 @@
         <path d="M0 0h15v4H4v11H0zm29 0h15v15h-4V4H29zM0 29h4v11h11v4H0zm40 0h4v15H29v-4h11z"/>
         <path d="m22 7 15 15-15 15L7 22zm0 7-8 8 8 8 8-8z" fill-rule="evenodd"/><path d="M20 19h4v6h-4z"/>
       </g>
-      <text x="145" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.8" font-weight="bold" letter-spacing="2.6" fill="#504027">CROSSHAIR LAB</text>
+      <text x="145" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.8" font-weight="bold" letter-spacing="2.6" fill="#504027">XHAIRGEN</text>
       <g fill="#594b2e"><path d="M67 88h28v2H67zm0 5h19v2H67zm0 5h24v1H67z"/><path d="m211 91 6-10 6 10zm1.5-2h9l-4.5-7z" fill-rule="evenodd"/></g>
       <path d="M5 106h7v20H5zm278 0h8v20h-8z" fill="#8a6a36"/>
     </g>

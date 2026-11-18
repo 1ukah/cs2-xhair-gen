@@ -4,7 +4,7 @@
 // the crosshair: zoom, recoil, movement and style stay owned by the editor.
 // All match data below is invented locally. No real players, no network, no screenshots.
 
-const FLAG = 'xlabHud';
+const FLAG = 'xhairgenHud';
 const SHOT_MS = 135; // Same cadence the editor uses for its firing pulse.
 const byId = id => document.getElementById(id);
 const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;

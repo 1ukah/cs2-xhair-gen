@@ -17,7 +17,7 @@ function route(scroll) {
   $$('[data-page]').forEach(el => {
     if (el.dataset.page === id) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
   });
-  document.title = `Crosshair Lab · ${isCase ? 'Crosshair Case' : 'CS2 Crosshair Editor'}`;
+  document.title = `xhairgen · ${isCase ? 'xhairgen Case' : 'CS2 Crosshair Editor'}`;
   rail.dismiss();
   if (scroll && location.hash !== '#main') {
     $('#main').scrollTop = 0; $('#main').focus({ preventScroll: true });
@@ -30,11 +30,11 @@ function soundButton() {
 }
 $('#sound').onclick = () => { toggleSound(); soundButton(); };
 function about() {
-  dialog('Crosshair Lab', 'How it works', `<ol class="steps">
+  dialog('xhairgen', 'How it works', `<ol class="steps">
       <li><b>Tune it.</b> Every Crosshair/Scopes row updates the map preview. Hold the preview to test fire, start the dynamic preview for movement, or open <b>HUD preview</b> for a full-window view.</li>
       <li><b>Take it into CS2.</b> Use <b>Copy code</b>, then paste it in <b>Settings › Crosshair/Scopes › Share or Import</b>.</li>
-      <li><b>Keep the rest.</b> Spectator, grenade and sniper rows are not part of a share code. <b>Full config .cfg</b> exports them: put <code>crosshair-lab.cfg</code> in <code>game/csgo/cfg/</code> and run <code>exec crosshair-lab</code> in the console.</li>
-      <li><b>Open cases.</b> Each Crosshair Case drop is rolled before the animation starts and lands in your inventory, ready to equip.</li>
+      <li><b>Keep the rest.</b> Spectator, grenade and sniper rows are not part of a share code. <b>Full config .cfg</b> exports them: put <code>xhairgen.cfg</code> in <code>game/csgo/cfg/</code> and run <code>exec xhairgen</code> in the console.</li>
+      <li><b>Open cases.</b> Each xhairgen Case drop is rolled before the animation starts and lands in your inventory, ready to equip.</li>
     </ol><p class="form-note">Settings, drops and sound preference stay in this browser. Independent fan tool; Counter-Strike belongs to Valve.</p>`,
     '<button class="btn secondary" data-close>Close</button>');
 }

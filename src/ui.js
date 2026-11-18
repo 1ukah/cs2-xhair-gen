@@ -46,11 +46,11 @@ export function fillIcons(root = document) {
 }
 export const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function load(key, fallback) {
-  try { return JSON.parse(localStorage.getItem(`xlab.1.${key}`)) ?? fallback; }
+  try { return JSON.parse(localStorage.getItem(`xhairgen.1.${key}`)) ?? fallback; }
   catch { return fallback; }
 }
 export function store(key, value) {
-  try { localStorage.setItem(`xlab.1.${key}`, JSON.stringify(value)); return true; }
+  try { localStorage.setItem(`xhairgen.1.${key}`, JSON.stringify(value)); return true; }
   catch { return false; }
 }
 // Section bands: the tab that is lit follows whichever section sits at the top of its scroller.

@@ -1,6 +1,6 @@
-# Crosshair Lab
+# xhairgen
 
-A build-free, single-page CS2 crosshair editor and **Crosshair Case** simulator. The editor follows the game's **Crosshair/Scopes** screen: a panoramic map preview sits above the setting rows. Switch to **HUD preview** to see the same reticle in a spectator-style practice view. Maps, fonts, inventory and share codes all work locally in the browser.
+A build-free, single-page CS2 crosshair editor and **xhairgen Case** simulator. The editor follows the game's **Crosshair/Scopes** screen: a panoramic map preview sits above the setting rows. Switch to **HUD preview** to see the same reticle in a spectator-style practice view. Maps, fonts, inventory and share codes all work locally in the browser.
 
 ## Host on GitHub Pages
 
@@ -24,9 +24,9 @@ Visit **http://127.0.0.1:8000/**. Serve it over HTTP(S); opening `index.html` di
 - Cycle through the seven map scenes, enable movement, hold the preview to sample firing, or magnify the reticle. Select **REF / …P** for reference height, scoped-rifle dot or sniper sight. The preview is a reference-pixel drawing; movement and recoil are illustrative, rather than a weapon physics simulation.
 - For a less obstructed sight picture, open **HUD preview**. The full-window scene uses your current map and reticle; the radar, score strip and ammo display provide the game-like frame of reference. **Esc** returns you to the settings you were editing.
 - **Copy code** exports the current, undashed `CS…` game format. Paste it into **CS2 → Settings → Crosshair/Scopes → Share or Import**. Import accepts the same format; old `CSGO-…` codes are identified rather than silently misread.
-- **Full config .cfg** includes the spectator, grenade and sniper preferences that game share codes omit. Put `crosshair-lab.cfg` in `Counter-Strike Global Offensive/game/csgo/cfg/` and enter `exec crosshair-lab` in the CS2 developer console.
+- **Full config .cfg** includes the spectator, grenade and sniper preferences that game share codes omit. Put `xhairgen.cfg` in `Counter-Strike Global Offensive/game/csgo/cfg/` and enter `exec xhairgen` in the CS2 developer console.
 
-## Crosshair Case
+## xhairgen Case
 
 The Series 01 case contains 18 named, usable reticles. A uniformly sampled integer selects a rarity, then a second uniform draw selects a design within that tier.
 

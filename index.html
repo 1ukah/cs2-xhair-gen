@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#272a2e">
-  <meta name="description" content="Build and share a Counter-Strike 2 crosshair, or unseal a reticle from the Crosshair Case.">
-  <title>Crosshair Lab · CS2 Crosshair Editor</title>
+  <meta name="description" content="Build and share a Counter-Strike 2 crosshair, or unseal a reticle from the xhairgen Case.">
+  <title>xhairgen · CS2 Crosshair Editor</title>
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/fonts/condensed-semibold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./styles.css">
@@ -19,7 +19,7 @@
       <button type="button" class="util-btn" id="sound" aria-label="Toggle sound"></button>
       <button type="button" class="util-btn util-about" data-about aria-label="How it works" title="How it works"><i data-icon="info" data-size="21"></i></button>
     </div>
-    <nav class="main-nav" aria-label="Workshop">
+    <nav class="main-nav" aria-label="Main">
       <a href="#editor" data-page="editor" aria-current="page">Editor</a>
       <a href="#case" data-page="case">Case</a>
       <button type="button" id="inventory"><span class="inventory-word">Inventory</span><span class="counter" id="inventory-count">00</span></button>
@@ -75,7 +75,7 @@
           <label for="share-code">Share code</label>
           <input id="share-code" readonly spellcheck="false" title="Paste in CS2: Settings › Crosshair/Scopes › Share or Import">
           <button type="button" class="box-btn" id="copy"><i data-icon="copy" data-size="15"></i>Copy code</button>
-          <button type="button" class="box-btn" id="download" title="Download every Crosshair/Scopes setting as crosshair-lab.cfg"><i data-icon="download" data-size="15"></i><span class="lg">Full config </span>.cfg</button>
+          <button type="button" class="box-btn" id="download" title="Download every Crosshair/Scopes setting as xhairgen.cfg"><i data-icon="download" data-size="15"></i><span class="lg">Full config </span>.cfg</button>
         </div>
         <div class="settings-scroll" id="settings-scroll" role="region" aria-label="Crosshair settings" tabindex="0"><div id="settings"></div></div>
       </div>
@@ -86,7 +86,7 @@
     </section>
 
     <section id="case-page" class="page" aria-labelledby="case-title" hidden>
-      <h1 class="sr-only" id="case-title">Crosshair Case</h1>
+      <h1 class="sr-only" id="case-title">xhairgen Case</h1>
       <div class="band">
         <div class="band-inner">
           <nav class="tabs" id="case-tabs" aria-label="Case sections">
@@ -99,12 +99,12 @@
       <div class="runway case-runway">
         <section class="case-sec" id="case-open" aria-label="Container">
           <div class="case-stage" id="case-stage" data-phase="idle">
-            <div class="stage-grid"></div><span class="stage-caption">Crosshair Case <b>/</b> Series 01</span>
-            <div class="stage-art"><div class="stage-glow"></div><svg class="crate" viewBox="0 0 450 284" fill="none" role="img" aria-label="Amber hard-shell Crosshair Case"><use href="./assets/case.svg#crate-body"/><use class="lid" href="./assets/case.svg#crate-lid"/></svg></div>
+            <div class="stage-grid"></div><span class="stage-caption">xhairgen Case <b>/</b> Series 01</span>
+            <div class="stage-art"><div class="stage-glow"></div><svg class="crate" viewBox="0 0 450 284" fill="none" role="img" aria-label="Amber hard-shell xhairgen Case"><use href="./assets/case.svg#crate-body"/><use class="lid" href="./assets/case.svg#crate-lid"/></svg></div>
             <div class="reel" id="reel" aria-hidden="true" hidden><div class="reel-layer"><div class="reel-track"></div></div><div class="reel-lens"><div class="reel-layer"><div class="reel-track"></div></div></div><div class="needle"></div></div>
             <div class="reward" id="reward" hidden></div>
           </div>
-          <div class="opening-controls"><div class="case-caption" aria-live="polite"><small id="case-kicker">Ready to open</small><strong id="case-status">Crosshair Case</strong></div><div id="case-actions"></div></div>
+          <div class="opening-controls"><div class="case-caption" aria-live="polite"><small id="case-kicker">Ready to open</small><strong id="case-status">xhairgen Case</strong></div><div id="case-actions"></div></div>
         </section>
         <section class="case-sec" id="case-odds" aria-labelledby="odds-title">
           <h2 class="group-title" id="odds-title" tabindex="-1">Drop Odds</h2>
@@ -116,7 +116,7 @@
           <div class="title-row"><h2 class="group-title" id="contents-title" tabindex="-1">Case Contents</h2><span class="panel-meta" id="contents-count"></span></div>
           <div class="item-grid" id="items"></div>
         </section>
-        <footer class="site-foot"><span>Crosshair Lab <b>/</b> Independent fan tool</span><a href="https://www.counter-strike.net/news/updates" target="_blank" rel="noopener">CS2 patch notes <span aria-hidden="true">↗</span></a></footer>
+        <footer class="site-foot"><span>xhairgen <b>/</b> Independent fan tool</span><a href="https://www.counter-strike.net/news/updates" target="_blank" rel="noopener">CS2 patch notes <span aria-hidden="true">↗</span></a></footer>
       </div>
     </section>
   </main>

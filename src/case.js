@@ -33,7 +33,7 @@ export function initCase(equip, rail) {
   function setCaption(kicker, status) { $('#case-kicker').textContent = kicker; $('#case-status').textContent = status; }
   function idle() {
     setPhase('idle'); reel.hidden = true; reward.hidden = true;
-    setCaption('Ready to open', 'Crosshair Case');
+    setCaption('Ready to open', 'xhairgen Case');
     actions.innerHTML = `<button type="button" class="btn go" data-open>${icon('key')}Open case</button>`;
   }
   function use(i) {
@@ -51,9 +51,9 @@ export function initCase(equip, rail) {
     if ($('#inventory-back', d)) $('#inventory-back', d).onclick = inventory;
   }
   function inventory() {
-    const total = totalOwned(), d = dialog('Workshop collection', 'Your inventory', total
+    const total = totalOwned(), d = dialog('Collection', 'Your inventory', total
       ? `<div class="inventory-summary">${total} ${total === 1 ? 'drop' : 'drops'} <b>/</b> ${order.length} of ${ITEMS.length} designs collected</div><div class="item-grid inventory-grid">${order.map((id, n) => tile(byId(id), n, owned[id])).join('')}</div>`
-      : `<div class="empty"><img src="./assets/case.svg" width="172" alt=""><h3>No drops yet</h3><p>Open a Crosshair Case to add your first reticle.</p></div>`,
+      : `<div class="empty"><img src="./assets/case.svg" width="172" alt=""><h3>No drops yet</h3><p>Open an xhairgen Case to add your first reticle.</p></div>`,
       `<button class="btn secondary" data-close>Close</button>${total ? '' : `<button class="btn primary" id="visit-case">${icon('case')}Inspect case</button>`}`, true);
     const grid = $('.inventory-grid', d);
     if (grid) grid.onclick = e => { const el = e.target.closest('[data-item]'); if (el) inspect(byId(el.dataset.item), true); };
@@ -68,7 +68,7 @@ export function initCase(equip, rail) {
     const total = totalOwned(), visit = `<a class="box-btn" href="#case">${icon('case', 15)}Open a case</a>`;
     $('#rail-recent-count').textContent = total; $('#rail-collection-count').textContent = order.length;
     $('#rail-summary').textContent = total ? `${total} ${total === 1 ? 'drop' : 'drops'} · ${order.length} of ${ITEMS.length} designs collected.` : 'Nothing unsealed yet.';
-    $('#rail-tip').textContent = total ? 'Pick a drop to inspect it, or use its target button to load it into the editor.' : 'Open a Crosshair Case to add your first reticle. Drops are kept in this browser.';
+    $('#rail-tip').textContent = total ? 'Pick a drop to inspect it, or use its target button to load it into the editor.' : 'Open an xhairgen Case to add your first reticle. Drops are kept in this browser.';
     $('#rail-recent').innerHTML = total
       ? `<ul class="drop-list">${order.slice(0, 12).map(dropRow).join('')}</ul><div class="rail-foot"><button type="button" class="box-btn" data-rail-all>${icon('grid', 15)}Full inventory</button></div>`
       : `<p class="rail-empty">No drops yet.</p><div class="rail-foot">${visit}</div>`;

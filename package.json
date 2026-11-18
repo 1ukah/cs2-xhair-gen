@@ -1,9 +1,9 @@
 {
-  "name": "crosshair-lab",
+  "name": "xhairgen",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A static CS2 crosshair editor and Crosshair Case simulator.",
+  "description": "A static CS2 crosshair generator and case opener.",
   "scripts": {
     "test": "node --test"
   }

@@ -193,7 +193,7 @@ export function initEditor() {
   $('#share-code').onclick = e => e.target.select();
   $('#download').onclick = () => {
     const blob = new Blob([configText(core, extra)], { type: 'text/plain;charset=utf-8' }), url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'crosshair-lab.cfg'; document.body.append(a); a.click(); a.remove();
+    const a = document.createElement('a'); a.href = url; a.download = 'xhairgen.cfg'; document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000); notice('Full config exported');
   };
   $('#import').onclick = () => {
