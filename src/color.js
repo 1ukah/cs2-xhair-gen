@@ -16,7 +16,7 @@ function toRGB([h, s, v]) {
 export function pickColor(label, current, apply) {
   let rgba = [...current], hsv = toHSV(rgba);
   const chips = ['00FF00', '56FFAE', '54EAFF', 'FFF652', 'FF79CE', 'CF9DFF', 'FFFFFF', '000000'];
-  const d = dialog('Style settings', label, `
+  const d = dialog('', label, `
     <div class="color-work">
       <div class="sv" id="sv" tabindex="0" role="slider" aria-label="Saturation and brightness; use arrow keys" aria-valuemin="0" aria-valuemax="100"><span></span></div>
       <div class="color-sliders"><label>Hue<input id="hue" type="range" min="0" max="360" step="1"></label><label>Transparency<input id="opacity" type="range" min="0" max="255" step="1"></label></div>

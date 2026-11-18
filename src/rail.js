@@ -17,7 +17,7 @@ export function initRail() {
       h.closest('.rail-sec').classList.toggle('on', on);
       $(`#${h.getAttribute('aria-controls')}`).hidden = !on;
     }
-    for (const id of ['rail-copy', 'rail-tip', 'rail-all']) $(`#${id}`).hidden = !open;
+    $('#rail-all').hidden = !open;
     $('#rail-close').hidden = !modalMode;
     scrim.hidden = !modalMode;
     for (const el of shell) el.inert = modalMode;

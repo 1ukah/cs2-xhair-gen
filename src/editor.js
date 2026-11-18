@@ -25,8 +25,7 @@ export function initEditor() {
   }
   function save() {
     clearTimeout(pendingSave); pendingSave = 0;
-    const ok = store('profile', { code: encode(core), extra });
-    $('#save-status').textContent = ok ? 'Saved on this device' : 'Session only';
+    store('profile', { code: encode(core), extra });
   }
   window.addEventListener('pagehide', () => { if (pendingSave) save(); });
   function preview(t = performance.now()) {
@@ -58,8 +57,7 @@ export function initEditor() {
     mapIndex = (mapIndex + delta + MAPS.length) % MAPS.length;
     const [id, name] = MAPS[mapIndex], img = $('#map-image');
     setMapSource(id); img.alt = `${name} crosshair preview`;
-    $('#map-name').textContent = name; $('#map-id').textContent = `DE_${id.toUpperCase()}`;
-    $('#map-count').textContent = `${mapIndex + 1} / ${MAPS.length}`;
+    $('#map-name').textContent = name;
     document.documentElement.style.setProperty('--map', `url("./assets/maps/${id}.webp")`);
     if (persist) store('preview', { map: id, zoom });
   }
@@ -107,11 +105,8 @@ export function initEditor() {
   }
   function renderSettings(focusKey) {
     const q = needle(), top = scroller.scrollTop;
-    let hinted = false;
     settings.innerHTML = sections().map(s => {
-      const hint = s.id === FIRST || hinted ? '' : `<p class="cfg-hint">${icon('info', 16)}<span>The rows from here on are not part of a share code. They travel with your <b>Full config .cfg</b> export.</span></p>`;
-      hinted ||= Boolean(hint);
-      return `<section class="set-group" id="sec-${s.id}" data-sec="${s.id}" aria-labelledby="sec-title-${s.id}"><h2 class="group-title${s.id === FIRST && !q ? ' sr-only' : ''}" id="sec-title-${s.id}" tabindex="-1">${s.title}</h2>${hint}${s.rows.map(row).join('')}</section>`;
+      return `<section class="set-group" id="sec-${s.id}" data-sec="${s.id}" aria-labelledby="sec-title-${s.id}"><h2 class="group-title${s.id === FIRST && !q ? ' sr-only' : ''}" id="sec-title-${s.id}" tabindex="-1">${s.title}</h2>${s.rows.map(row).join('')}</section>`;
     }).join('') || '<p class="no-match" role="status">No settings match <q></q>. Press Esc to clear the search.</p>';
     const echo = $('.no-match q', settings); if (echo) echo.textContent = query.trim();
     scroller.scrollTop = top;
@@ -192,12 +187,12 @@ export function initEditor() {
   $('#share-code').onclick = e => e.target.select();
   $('#download').onclick = () => {
     const blob = new Blob([configText(core, extra)], { type: 'text/plain;charset=utf-8' }), url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'xhairgen.cfg'; document.body.append(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000); notice('Full config exported');
+    const a = document.createElement('a'); a.href = url; a.download = 'crosshair.cfg'; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000); notice('Config exported');
   };
   $('#import').onclick = () => {
     const code = encode(core);
-    const d = dialog('Crosshair / Scopes', 'Share or Import', `<label class="stack-label" for="share-current">Your crosshair code</label><div class="code-row"><input id="share-current" class="entry code-entry" readonly spellcheck="false" value="${code}"><button type="button" class="btn secondary compact" id="share-copy">${icon('copy', 15)}<span>Copy code</span></button></div><form id="import-form"><label class="stack-label spaced" for="import-input">Import a code</label><input id="import-input" class="entry code-entry" autocomplete="off" spellcheck="false" placeholder="CS…" maxlength="100" required><p class="form-note">Copy a code from Share or Import in the CS2 Crosshair/Scopes menu.</p><p class="error" role="alert" id="import-error"></p></form>`, '<button class="btn secondary" data-close>Cancel</button><button type="submit" form="import-form" class="btn primary">Import code</button>');
+    const d = dialog('', 'Share or Import', `<label class="stack-label" for="share-current">Your crosshair code</label><div class="code-row"><input id="share-current" class="entry code-entry" readonly spellcheck="false" value="${code}"><button type="button" class="btn secondary compact" id="share-copy">${icon('copy', 15)}<span>Copy</span></button></div><form id="import-form"><label class="stack-label spaced" for="import-input">Import a code</label><input id="import-input" class="entry code-entry" autocomplete="off" spellcheck="false" placeholder="CS…" maxlength="100" required><p class="error" role="alert" id="import-error"></p></form>`, '<button class="btn secondary" data-close>Cancel</button><button type="submit" form="import-form" class="btn primary">Import</button>');
     $('#import-input', d).focus();
     $('#share-current', d).onclick = e => e.target.select();
     $('#share-copy', d).onclick = async e => { const label = $('span', e.currentTarget); if (await copyText(code)) label.textContent = 'Copied'; };
@@ -209,7 +204,7 @@ export function initEditor() {
     };
   };
   $('#hud-ref').onclick = () => {
-    const d = dialog('Live preview', 'Preview setup', `<form id="preview-form"><label class="stack-label" for="sight">Sight</label>${select('id="sight" class="wide-select"', options([['primary', 'Primary crosshair'], ['scope', 'Scoped rifle dot'], ['sniper', 'Sniper scope']], sight))}<label class="stack-label spaced" for="ref-height">Reference screen height (px)</label><input class="entry" type="number" id="ref-height" min="240" max="65535" step="1" required value="${core.screenHeight}"><p class="form-note">Use the vertical resolution you play at. CS2 stores it in the code and scales your reticle at other resolutions. At 1×, one reference pixel is one preview pixel.</p></form>`, '<button class="btn secondary" data-close>Cancel</button><button class="btn primary" type="submit" form="preview-form">Apply</button>');
+    const d = dialog('', 'Preview setup', `<form id="preview-form"><label class="stack-label" for="sight">Sight</label>${select('id="sight" class="wide-select"', options([['primary', 'Primary crosshair'], ['scope', 'Scoped rifle dot'], ['sniper', 'Sniper scope']], sight))}<label class="stack-label spaced" for="ref-height">Screen height (px)</label><input class="entry" type="number" id="ref-height" min="240" max="65535" step="1" required value="${core.screenHeight}"></form>`, '<button class="btn secondary" data-close>Cancel</button><button class="btn primary" type="submit" form="preview-form">Apply</button>');
     $('#preview-form', d).onsubmit = e => { e.preventDefault(); sight = $('#sight', d).value; assign('screenHeight', +$('#ref-height', d).value); $('#viewport').classList.toggle('scoped', sight !== 'primary'); d.close(); preview(); };
   };
   $('#prev-map').onclick = () => selectMap(-1); $('#next-map').onclick = () => selectMap(1);

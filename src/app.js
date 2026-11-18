@@ -11,13 +11,13 @@ try { initPreviewHud(); } catch (err) { console.error('HUD preview could not sta
 const container = initCase(c => editor.equip(c), rail);
 function route(scroll) {
   const isCase = location.hash === '#case', id = isCase ? 'case' : 'editor';
-  if (!isCase) container.deactivate();
+  if (isCase) container.activate(); else container.deactivate();
   $('#editor-page').hidden = isCase; $('#case-page').hidden = !isCase;
   editor.activate(!isCase);
   $$('[data-page]').forEach(el => {
     if (el.dataset.page === id) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
   });
-  document.title = `xhairgen · ${isCase ? 'Case' : 'CS2 Crosshair Generator'}`;
+  document.title = isCase ? 'Series 1 Case · CS2 Crosshair Generator' : 'CS2 Crosshair Generator';
   rail.dismiss();
   if (scroll && location.hash !== '#main') {
     $('#main').scrollTop = 0; $('#main').focus({ preventScroll: true });
@@ -26,17 +26,15 @@ function route(scroll) {
 function soundButton() {
   const b = $('#sound'); b.innerHTML = icon(soundOn() ? 'sound' : 'mute', 22);
   b.setAttribute('aria-pressed', String(soundOn())); b.setAttribute('aria-label', `Sound ${soundOn() ? 'on' : 'off'}`);
-  b.title = `${soundOn() ? 'Mute' : 'Enable'} case sounds`;
 }
 $('#sound').onclick = () => { toggleSound(); soundButton(); };
 function about() {
-  dialog('xhairgen', 'How it works', `<ol class="steps">
-      <li><b>Tune it.</b> Every Crosshair/Scopes row updates the map preview. Hold the preview to test fire, start the dynamic preview for movement, or open <b>HUD preview</b> for a full-window view.</li>
-      <li><b>Take it into CS2.</b> Use <b>Copy code</b>, then paste it in <b>Settings › Crosshair/Scopes › Share or Import</b>.</li>
-      <li><b>Keep the rest.</b> Spectator, grenade and sniper rows are not part of a share code. <b>Full config .cfg</b> exports them: put <code>xhairgen.cfg</code> in <code>game/csgo/cfg/</code> and run <code>exec xhairgen</code> in the console.</li>
-      <li><b>Open cases.</b> Each xhairgen Case drop is rolled before the animation starts and lands in your inventory, ready to equip.</li>
-    </ol><p class="form-note">Settings, drops and sound preference stay in this browser. Independent fan tool; Counter-Strike belongs to Valve.</p>`,
-    '<button class="btn secondary" data-close>Close</button>');
+  dialog('', 'How it works', `<ol class="steps">
+      <li>Tune the rows. Hold the preview to test fire.</li>
+      <li><b>Copy</b> the code and paste it in CS2: <b>Settings › Crosshair/Scopes › Share or Import</b>.</li>
+      <li><b>.cfg</b> also keeps the grenade and sniper rows: put <code>crosshair.cfg</code> in <code>game/csgo/cfg/</code> and run <code>exec crosshair</code>.</li>
+      <li>Case drops are random per rarity and stay in this browser.</li>
+    </ol><p class="form-note">Fan tool. Counter-Strike belongs to Valve.</p>`);
 }
 for (const b of $$('[data-about]')) b.onclick = about;
 const d = modal();

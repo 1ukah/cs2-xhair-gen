@@ -101,7 +101,7 @@ const extraVars = {
   ...Object.fromEntries(grenades.flatMap(([id]) => [[`${id}Enabled`, `cl_grenadecrosshair_${id}`], [`${id}Delay`, `cl_grenadecrosshairdelay_${id}`]])),
 };
 export function configText(c, e) {
-  return '// xhairgen | Crosshair / Scopes\n' + cs2CrosshairToConVars(c).trim() + '\n\n'
+  return '// Crosshair / Scopes\n' + cs2CrosshairToConVars(c).trim() + '\n\n'
     + Object.entries(extraVars).map(([k, cmd]) => `${cmd} "${Number(e[k])}"`).join('\n') + '\n';
 }
 export function restoreExtras(saved) {

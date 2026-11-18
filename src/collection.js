@@ -5,11 +5,11 @@ export const TIERS = [
   { id: 'purple', label: 'Restricted', color: '#8847ff', weight: 125 },
   { id: 'pink', label: 'Classified', color: '#d32ce6', weight: 25 },
   { id: 'red', label: 'Covert', color: '#eb4b4b', weight: 5 },
-  { id: 'gold', label: 'Rare Special Item', color: '#e4ae39', weight: 2 },
+  { id: 'gold', label: 'Rare Special', color: '#e4ae39', weight: 2 },
 ];
 export const TOTAL = TIERS.reduce((s, t) => s + t.weight, 0);
 export const odds = t => (t.weight * 100 / TOTAL).toFixed(2) + '%';
-export const tierOf = item => TIERS.find(t => t.id === item.tier);
+export const tierById = id => TIERS.find(t => t.id === id);
 
 export function uniform(limit) {
   const buf = new Uint32Array(1), cutoff = 2 ** 32 - (2 ** 32 % limit);
@@ -17,6 +17,9 @@ export function uniform(limit) {
   return buf[0] % limit;
 }
 const pick = a => a[uniform(a.length)];
+const chance = percent => uniform(100) < percent;
+const between = (min, max) => min + uniform(max - min + 1);
+const hundredths = (min, max) => between(min, max) / 100;
 export function tierForTicket(ticket) {
   if (!Number.isInteger(ticket) || ticket < 0 || ticket >= TOTAL) throw new RangeError('Invalid case ticket');
   for (const t of TIERS) {
@@ -24,43 +27,94 @@ export function tierForTicket(ticket) {
     ticket -= t.weight;
   }
 }
-function rgb(value) {
-  const [red, green, blue] = fromHex(value);
-  return { red, green, blue };
+
+const PRO = ['00FF00', '00FF00', '00FFFF', 'FFFFFF', 'FFFF00', 'FF00FF', '00FFAA', '32FF64'];
+const VIVID = ['56FFAE', '54EAFF', 'FFF652', 'FF79CE', 'CF9DFF', 'FFB868', '9DFF76', '8BAEFF', 'FF6E65', 'F5FCFF'];
+const ink = ([red, green, blue], alpha = 255) => ({ red, green, blue, alpha });
+const edge = ([outlineRed, outlineGreen, outlineBlue], outlineAlpha = 255) => ({ outlineRed, outlineGreen, outlineBlue, outlineAlpha });
+const shift = (rgb, amount) => rgb.map(n => Math.min(255, Math.max(0, n + uniform(amount * 2 + 1) - amount)));
+const shade = (rgb, factor) => rgb.map(n => Math.round(n * factor));
+function hue(saturation = 100, value = 100) {
+  const h = uniform(360), s = saturation / 100, v = value / 100;
+  return [5, 3, 1].map(n => {
+    const k = (n + h / 60) % 6;
+    return Math.round((v - v * s * Math.max(0, Math.min(k, 4 - k, 1))) * 255);
+  });
 }
-const cyan = '54EBFC';
-function item(id, name, tier, style, color, spec) {
-  return { id, name, tier, core: { ...DEFAULT, followRecoil: false, style, ...rgb(color), ...spec } };
+function anyColor() {
+  const rgb = [uniform(256), uniform(256), uniform(256)];
+  if (Math.max(...rgb) < 110) rgb[uniform(3)] = 255;
+  return rgb;
 }
-export const ITEMS = [
-  item('field', 'Field Issue', 'blue', 4, '9DFF76', { length: 6, thickness: 2, gap: 3, outlineMode: 0 }),
-  item('pin', 'Pinpoint', 'blue', 6, 'ECF4FF', { thickness: 4 }),
-  item('vector', 'Vector', 'blue', 0, cyan, { length: 9, gap: 3, thickness: 2, dynamicSpreadLimit: 12 }),
-  item('relay', 'Relay', 'blue', 4, 'FFB868', { length: 7, gap: 3, tStyleEnabled: true, outlineMode: 2 }),
-  item('aperture', 'Aperture', 'blue', 3, 'AEE4F7', { thickness: 2, gap: 6 }),
-  item('surveyor', 'Surveyor', 'blue', 8, 'D0ED99', { thickness: 2, gap: 5, outlineMode: 0 }),
-  item('cadence', 'Cadence', 'blue', 5, '8BAEFF', { length: 5, gap: 3, centerDotEnabled: true }),
-  item('afterglow', 'Afterglow', 'purple', 9, 'BD94FF', { gap: 8, splitSizeRatio: 0.62, thickness: 3 }),
-  item('pulse', 'Pulse Check', 'purple', 1, '4EEFC8', { centerDotEnabled: true, dynamicSpreadLimit: 21, thickness: 2 }),
-  item('parallax', 'Parallax', 'purple', 2, 'C5A4FF', { length: 10, gap: 2, splitSizeRatio: 0.48, innerSplitAlpha: 1, outerSplitAlpha: 0.6 }),
-  item('switch', 'Switchback', 'purple', 4, 'B6C7FF', { length: 9, gap: 2, thickness: 3, tStyleEnabled: true, outlineMode: 2 }),
-  item('ultraviolet', 'Ultraviolet', 'purple', 3, 'CE91FF', { gap: 6, thickness: 3, centerDotEnabled: true }),
-  item('bloom', 'Neon Bloom', 'pink', 7, 'FF78CC', { gap: 4, length: 7, centerDotEnabled: true, dynamicSpreadLimit: 18 }),
-  item('prism', 'Prism Shift', 'pink', 8, 'FFBBEA', { gap: 7, thickness: 2, centerDotEnabled: true, outlineRed: 175, outlineBlue: 126 }),
-  item('orchid', 'Orchid', 'pink', 9, 'FF66E4', { gap: 9, thickness: 3, splitSizeRatio: 0.38, centerDotEnabled: true }),
-  item('redline', 'Redline', 'red', 2, 'FF6E65', { gap: -1, length: 11, splitDistance: 5, splitSizeRatio: 0.58, innerSplitAlpha: 1, outerSplitAlpha: 0.8, thickness: 2 }),
-  item('sunspot', 'Sunspot', 'red', 3, 'FFA253', { gap: 8, thickness: 3, centerDotEnabled: true, outlineRed: 157, outlineGreen: 30 }),
-  item('solstice', 'Solstice', 'gold', 9, 'FFDA68', { gap: 9, thickness: 3, splitSizeRatio: 0.72, centerDotEnabled: true, outlineRed: 113, outlineGreen: 67, outlineBlue: 8 }),
-];
+function finish(spec) {
+  const c = { ...DEFAULT, followRecoil: false, ...spec };
+  if (c.style !== 2 && c.gap < 0) c.gap = 0;
+  if (c.thickness < 1) c.thickness = 1;
+  if ([0, 2, 4, 5].includes(c.style) && c.length === 0) c.centerDotEnabled = true;
+  return c;
+}
+
+function blue() {
+  const style = pick([4, 4, 4, 4, 4, 2, 2, 6]), color = fromHex(pick(PRO));
+  const base = { style, ...ink(color), outlineMode: pick([0, 0, 1]), ...edge([0, 0, 0]) };
+  if (style === 6) return finish({ ...base, thickness: between(2, 4) });
+  if (style === 2) return finish({ ...base, thickness: 1, length: between(2, 5), gap: between(-3, -1), splitDistance: 7, innerSplitAlpha: 1, outerSplitAlpha: 1, splitSizeRatio: 1 });
+  return finish({ ...base, thickness: pick([1, 1, 1, 2]), length: between(1, 4), gap: between(0, 2), centerDotEnabled: chance(12), tStyleEnabled: chance(6) });
+}
+function purple() {
+  const style = pick([3, 8, 9, 6, 4, 4, 0]), color = fromHex(pick(VIVID));
+  const base = { style, ...ink(color, between(220, 255)), outlineMode: pick([0, 1, 2, 2]), ...edge(chance(50) ? [0, 0, 0] : shade(color, 0.25)) };
+  if (style === 6) return finish({ ...base, thickness: between(3, 5), outlineMode: 2 });
+  if (style === 9) return finish({ ...base, thickness: between(2, 3), gap: between(4, 8), splitSizeRatio: hundredths(40, 75), centerDotEnabled: chance(35) });
+  if (style === 3 || style === 8) return finish({ ...base, thickness: between(1, 2), gap: between(3, 7), centerDotEnabled: chance(40) });
+  if (style === 0) return finish({ ...base, thickness: between(1, 2), length: between(4, 8), gap: between(2, 4), dynamicSpreadLimit: between(8, 20) });
+  return finish({ ...base, thickness: between(1, 2), length: between(3, 7), gap: between(1, 4), outlineMode: 2, tStyleEnabled: chance(30) });
+}
+function pink() {
+  const style = pick([7, 9, 1, 3, 8, 2, 5]), color = shift(fromHex(pick(VIVID)), 20);
+  const base = {
+    style, ...ink(color, between(170, 255)), outlineMode: pick([1, 2, 2]), ...edge(chance(60) ? shade(hue(90, 100), 0.55) : [0, 0, 0], between(160, 255)),
+    centerDotEnabled: chance(55), tStyleEnabled: chance(35), scopeDotUseCrosshairColor: chance(60), scopeDotScale: hundredths(70, 140),
+  };
+  if (style === 7) return finish({ ...base, thickness: between(1, 3), length: between(4, 9), gap: between(3, 7), dynamicSpreadLimit: between(10, 30) });
+  if (style === 9) return finish({ ...base, thickness: between(2, 4), gap: between(5, 11), splitSizeRatio: hundredths(25, 90) });
+  if (style === 1) return finish({ ...base, thickness: between(1, 3), dynamicSpreadLimit: between(10, 35) });
+  if (style === 2) return finish({ ...base, thickness: between(1, 2), length: between(6, 12), gap: between(-4, 2), splitDistance: between(3, 9), innerSplitAlpha: hundredths(50, 100), outerSplitAlpha: hundredths(30, 90), splitSizeRatio: hundredths(30, 80) });
+  if (style === 5) return finish({ ...base, thickness: between(1, 3), length: between(4, 9), gap: between(2, 5) });
+  return finish({ ...base, thickness: between(2, 4), gap: between(5, 10) });
+}
+function red() {
+  const style = pick(STYLES)[0];
+  return finish({
+    style, ...ink(hue(between(55, 100), 100), between(150, 255)), outlineMode: pick([1, 2]), ...edge(hue(100, between(35, 90)), between(180, 255)),
+    thickness: between(2, 5), length: between(6, 16), gap: style === 2 ? between(-6, 6) : between(3, 12),
+    centerDotEnabled: chance(70), tStyleEnabled: chance(40), followRecoil: chance(50), dynamicSpreadLimit: between(15, 60),
+    splitDistance: between(4, 14), innerSplitAlpha: hundredths(40, 100), outerSplitAlpha: hundredths(30, 100), splitSizeRatio: hundredths(20, 90),
+    scopeDotUseCrosshairColor: true, scopeDotScale: hundredths(50, 180),
+  });
+}
+function gold() {
+  const style = pick(STYLES)[0];
+  return finish({
+    style, ...ink(anyColor(), between(110, 255)), outlineMode: uniform(3), ...edge([uniform(256), uniform(256), uniform(256)], between(60, 255)),
+    thickness: between(1, 10), length: between(0, 40), gap: style === 2 ? between(-10, 20) : between(0, 24),
+    centerDotEnabled: chance(50), tStyleEnabled: chance(50), followRecoil: chance(50), dynamicSpreadLimit: between(0, 120),
+    splitDistance: between(0, 30), innerSplitAlpha: hundredths(0, 100), outerSplitAlpha: hundredths(30, 100), splitSizeRatio: hundredths(0, 100),
+    scopeDotUseCrosshairColor: chance(50), scopeDotScale: hundredths(10, 200),
+  });
+}
+const MAKERS = { blue, purple, pink, red, gold };
+export function generate(tier) {
+  return { tier, core: MAKERS[tier]() };
+}
 export function drawItem() {
-  const tier = tierForTicket(uniform(TOTAL));
-  return pick(ITEMS.filter(i => i.tier === tier.id));
+  return generate(tierForTicket(uniform(TOTAL)).id);
 }
 export function randomCrosshair(screenHeight = DEFAULT.screenHeight) {
   const style = pick(STYLES)[0], outlineMode = uniform(3);
   return {
     ...DEFAULT, screenHeight, style, outlineMode,
-    ...randomColor(), alpha: 190 + uniform(66),
+    ...ink(shift(fromHex(pick(['00FF80', '55EBFF', 'FFFF62', 'FF77D2', 'A498FF', 'FFAF5C', 'F5FCFF', '83FF4F'])), 16), 190 + uniform(66)),
     length: 3 + uniform(12), thickness: 1 + uniform(4),
     gap: style === 2 ? uniform(13) - 3 : 2 + uniform(8),
     centerDotEnabled: uniform(3) === 0, tStyleEnabled: uniform(5) === 0,
@@ -70,9 +124,4 @@ export function randomCrosshair(screenHeight = DEFAULT.screenHeight) {
     outlineRed: uniform(46), outlineGreen: uniform(46), outlineBlue: uniform(46), outlineAlpha: 180 + uniform(76),
     scopeDotUseCrosshairColor: uniform(2) === 1, scopeDotScale: (65 + uniform(81)) / 100,
   };
-}
-function randomColor() {
-  const base = fromHex(pick(['00FF80', '55EBFF', 'FFFF62', 'FF77D2', 'A498FF', 'FFAF5C', 'F5FCFF', '83FF4F']));
-  const [red, green, blue] = base.map(n => Math.min(255, Math.max(0, n + uniform(33) - 16)));
-  return { red, green, blue };
 }

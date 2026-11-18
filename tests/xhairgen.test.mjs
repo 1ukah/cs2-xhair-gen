@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT, EXTRA_DEFAULT, configText, decode, encode, lowerBound, restoreExtras, visibleFields } from '../src/settings.js';
-import { ITEMS, TIERS, TOTAL, odds, randomCrosshair, tierForTicket } from '../src/collection.js';
+import { TIERS, TOTAL, drawItem, generate, odds, randomCrosshair, tierForTicket } from '../src/collection.js';
 
 test('known current-format CS2 code imports and exports byte-for-byte', () => {
   const code = 'CSvbPubOq37zTGqtsPTP5QTrp5CB4xFXiKRLfzJsm49ZRe';
@@ -51,9 +51,26 @@ test('enumerating every possible ticket exactly reproduces the published rarity 
   assert.throws(() => tierForTicket(TOTAL), RangeError);
 });
 
-test('all drops are unique equipable codes and random generation respects the reference resolution', () => {
-  assert.equal(new Set(ITEMS.map(i => encode(i.core))).size, ITEMS.length);
-  for (const i of ITEMS) assert.deepEqual(decode(encode(i.core)), i.core);
+test('every rarity generates valid, visible, equipable crosshairs within its own rules', () => {
+  const sample = (tier, n = 300) => Array.from({ length: n }, () => generate(tier).core);
+  for (const t of TIERS) {
+    for (const c of sample(t.id)) {
+      assert.deepEqual(decode(encode(c)), c);
+      assert.ok(c.thickness > 0 && c.alpha > 0 && (c.style === 2 || c.gap >= 0));
+      assert.ok(![0, 2, 4, 5].includes(c.style) || c.length > 0 || c.centerDotEnabled);
+    }
+  }
+  const blue = sample('blue');
+  assert.ok(blue.every(c => [2, 4, 6].includes(c.style) && c.thickness <= 4 && (c.style === 6 || c.length <= 5) && c.alpha === 255));
+  assert.ok(sample('purple').every(c => [0, 3, 4, 6, 8, 9].includes(c.style) && c.thickness <= 5));
+  assert.ok(sample('pink').every(c => [1, 2, 3, 5, 7, 8, 9].includes(c.style) && c.outlineMode !== 0));
+  assert.ok(sample('red').every(c => c.outlineMode !== 0 && c.scopeDotUseCrosshairColor));
+  assert.ok(new Set(sample('gold').map(c => c.style)).size === 10);
+  assert.ok(new Set(sample('blue', 60).map(encode)).size > 20);
+});
+
+test('case draws carry a known rarity and random generation respects the reference resolution', () => {
+  for (let n = 0; n < 200; n++) { const d = drawItem(); assert.ok(TIERS.some(t => t.id === d.tier)); assert.deepEqual(decode(encode(d.core)), d.core); }
   for (let n = 0; n < 100; n++) {
     const c = randomCrosshair(1440);
     assert.equal(c.screenHeight, 1440); assert.deepEqual(decode(encode(c)), c);

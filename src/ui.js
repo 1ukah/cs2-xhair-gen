@@ -73,7 +73,7 @@ export const modal = () => $('#dialog');
 export function dialog(kicker, title, body, actions = '', wide = false) {
   const d = modal();
   d.classList.toggle('wide', wide);
-  d.innerHTML = `<header class="dialog-header"><div><p class="eyebrow">${kicker}</p><h2 id="dialog-title">${title}</h2></div><button class="icon-btn" data-close aria-label="Close dialog">${icon('close')}</button></header><div class="dialog-body">${body}</div>${actions ? `<footer class="dialog-actions">${actions}</footer>` : ''}`;
+  d.innerHTML = `<header class="dialog-header"><div>${kicker ? `<p class="eyebrow">${kicker}</p>` : ''}<h2 id="dialog-title">${title}</h2></div><button class="icon-btn" data-close aria-label="Close dialog">${icon('close')}</button></header><div class="dialog-body">${body}</div>${actions ? `<footer class="dialog-actions">${actions}</footer>` : ''}`;
   if (!d.open) d.showModal();
   return d;
 }
