@@ -81,6 +81,72 @@ export function dialog(kicker, title, body, actions = '', wide = false, sides = 
   d.tabIndex = -1; d.focus({ preventScroll: true });
   return d;
 }
+let dismiss = null;
+export const closeFloat = () => dismiss?.();
+export function float(anchor, el, keep = '') {
+  closeFloat();
+  const guard = new AbortController(), on = (target, type, fn, capture = false) => target.addEventListener(type, fn, { signal: guard.signal, capture });
+  function close() {
+    if (dismiss !== close) return;
+    dismiss = null; guard.abort(); el.remove(); anchor.setAttribute('aria-expanded', 'false');
+  }
+  dismiss = close;
+  document.body.append(el); anchor.setAttribute('aria-expanded', 'true');
+  on(document, 'pointerdown', e => {
+    if (!el.contains(e.target) && !anchor.contains(e.target) && !(keep && e.target.closest?.(keep))) close();
+  }, true);
+  on(window, 'resize', close); on(window, 'hashchange', close); on(window, 'blur', close);
+  return { close, on };
+}
+export function dropdown(anchor, items, current, choose, floor = 8) {
+  if (anchor.getAttribute('aria-expanded') === 'true') return closeFloat();
+  const list = document.createElement('div');
+  list.className = 'menu'; list.setAttribute('role', 'listbox');
+  list.innerHTML = items.map(([v, s], i) => `<div class="menu-item" role="option" id="menu-item-${i}" aria-selected="${v === current}">${s}</div>`).join('');
+  const rows = [...list.children], { close, on } = float(anchor, list);
+  let at = 0, typed = '', typedAt = 0;
+  function mark(i, scroll = true) {
+    at = (i + rows.length) % rows.length;
+    rows.forEach((r, n) => r.classList.toggle('active', n === at));
+    anchor.setAttribute('aria-activedescendant', rows[at].id);
+    if (scroll) rows[at].scrollIntoView({ block: 'nearest' });
+  }
+  function done(pick) {
+    anchor.removeAttribute('aria-activedescendant'); close();
+    if (pick && items[at][0] !== current) choose(items[at][0]);
+  }
+  const b = anchor.getBoundingClientRect(), h = list.offsetHeight, room = innerHeight - 8;
+  let top = b.bottom + 4;
+  if (top + h > room) {
+    if (b.top - 4 - h >= floor) top = b.top - 4 - h;
+    else {
+      const from = room - floor >= Math.min(h, 200) ? floor : 8;
+      list.style.maxHeight = `${room - from}px`; top = Math.max(from, room - h);
+    }
+  }
+  list.style.minWidth = `${b.width}px`;
+  list.style.left = `${Math.max(8, Math.min(b.right - list.offsetWidth, innerWidth - list.offsetWidth - 8))}px`;
+  list.style.top = `${top}px`;
+  anchor.focus({ preventScroll: true });
+  mark(Math.max(0, items.findIndex(([v]) => v === current)));
+  on(list, 'pointerdown', e => e.preventDefault());
+  on(list, 'pointermove', e => { const i = rows.indexOf(e.target.closest('.menu-item')); if (i >= 0 && i !== at) mark(i, false); });
+  on(list, 'click', e => { const i = rows.indexOf(e.target.closest('.menu-item')); if (i >= 0) { mark(i, false); done(true); } });
+  on(anchor, 'blur', () => done(false));
+  on(anchor, 'keydown', e => {
+    const move = { ArrowDown: at + 1, ArrowUp: at - 1, Home: 0, End: rows.length - 1 }[e.key];
+    if (move !== undefined) { e.preventDefault(); mark(move); }
+    else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault(); anchor.addEventListener('keyup', k => k.preventDefault(), { once: true }); done(true);
+    } else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); }
+    else if (e.key === 'Tab') done(false);
+    else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      typed = (e.timeStamp - typedAt > 700 ? '' : typed) + e.key.toLowerCase(); typedAt = e.timeStamp;
+      const i = items.findIndex(([, s]) => s.toLowerCase().startsWith(typed));
+      if (i >= 0) mark(i);
+    }
+  });
+}
 export async function copyText(text, message = 'Crosshair code copied') {
   try {
     await navigator.clipboard.writeText(text);

@@ -2,11 +2,12 @@ import { DEFAULT, EXTRA_DEFAULT, GROUPS, MAPS, bounded, clamp, colorChannels, co
 import { randomCrosshair } from './collection.js';
 import { reticle } from './reticle.js';
 import { pickColor } from './color.js';
-import { $, $$, activeSection, copyText, dialog, icon, load, notice, reduced, scrollToSection, store, tone } from './ui.js';
+import { $, $$, activeSection, closeFloat, copyText, dialog, dropdown, icon, load, notice, reduced, scrollToSection, store, tone } from './ui.js';
 
 const num = (value, step) => step === 1 ? String(value) : value.toFixed(2);
-const options = (pairs, current) => pairs.map(([v, s]) => `<option value="${v}"${v === current ? ' selected' : ''}>${s}</option>`).join('');
-const select = (attrs, opts) => `<span class="select-shell"><select ${attrs}>${opts}</select>${icon('down', 16)}</span>`;
+const YES_NO = [[1, 'Yes'], [0, 'No']];
+const choices = f => f.type === 'select' ? f.options : YES_NO;
+const select = (attrs, pairs, current) => `<button type="button" class="pick" ${attrs} aria-haspopup="listbox" aria-expanded="false"><span>${pairs.find(([v]) => v === current)?.[1] ?? ''}</span>${icon('down', 16)}</button>`;
 const FIRST = GROUPS[0][0];
 export function initEditor() {
   const saved = load('profile', {}), prefs = load('preview', {});
@@ -67,11 +68,11 @@ export function initEditor() {
     const lbl = `<label for="${id}">${label}</label>`;
     const attr = `id="${id}" data-key="${key}"`;
     if (f.type === 'select' || f.type === 'toggle') {
-      return `<div class="setting-row${key === 'style' ? ' style-row' : ''}">${lbl}${select(attr, f.type === 'select' ? options(f.options, val) : options([[1, 'Yes'], [0, 'No']], +val))}</div>`;
+      return `<div class="setting-row${key === 'style' ? ' style-row' : ''}">${lbl}${select(attr, choices(f), +val)}</div>`;
     }
     if (f.type === 'color') {
       const keys = colorChannels(key === 'outlineColor'), rgba = keys.map(k => core[k]);
-      return `<div class="setting-row">${lbl}<button type="button" class="color-btn" id="${id}" data-color="${key}" aria-label="${label}, ${hex(rgba)}"><i style="--swatch:rgba(${rgba.slice(0, 3)},${rgba[3] / 255})"></i><span>${hex(rgba)}</span>${icon('down', 16)}</button></div>`;
+      return `<div class="setting-row">${lbl}<button type="button" class="color-btn" id="${id}" data-color="${key}" aria-haspopup="dialog" aria-expanded="false"><i style="--swatch:rgba(${rgba.slice(0, 3)},${rgba[3] / 255})"></i><span>${hex(rgba)}</span>${icon('down', 16)}</button></div>`;
     }
     const min = lowerBound(f, core), percent = clamp((val - min) * 100 / (f.max - min), 0, 100);
     const limits = `min="${min}" max="${f.max}" step="${f.step}"`;
@@ -90,6 +91,7 @@ export function initEditor() {
     if (current && current.dataset.sec !== group) mark(current.dataset.sec);
   }
   function renderSettings(focusKey) {
+    closeFloat();
     const q = needle(), top = scroller.scrollTop;
     settings.innerHTML = sections().map(s => {
       return `<section class="set-group" id="sec-${s.id}" data-sec="${s.id}" aria-labelledby="sec-title-${s.id}"><h2 class="group-title${s.id === FIRST && !q ? ' sr-only' : ''}" id="sec-title-${s.id}" tabindex="-1">${s.title}</h2>${s.rows.map(row).join('')}</section>`;
@@ -151,16 +153,26 @@ export function initEditor() {
     if (el.dataset.enable) {
       assign(el.dataset.enable, el.checked); renderSettings(); $(`[data-enable="${el.dataset.enable}"]`, settings)?.focus({ preventScroll: true }); return;
     }
-    const f = fields().find(f => f.key === el.dataset.key);
-    if (f) { assign(f.key, f.type === 'toggle' ? Boolean(+el.value) : +el.value); renderSettings(f.key); }
   };
   settings.onclick = e => {
+    const menu = e.target.closest('.pick'), f = menu && fields().find(f => f.key === menu.dataset.key);
+    if (f) {
+      dropdown(menu, choices(f), +model(f.key)[f.key], v => { assign(f.key, f.type === 'toggle' ? Boolean(v) : v); renderSettings(f.key); }, $('.code-strip').getBoundingClientRect().bottom + 4);
+      return;
+    }
     const el = e.target.closest('[data-color]'); if (!el) return;
     const outline = el.dataset.color === 'outlineColor', keys = colorChannels(outline);
-    pickColor(outline ? 'Outline Color and Transparency' : 'Color and Transparency', keys.map(k => core[k]), values => {
-      if (keys.some((k, i) => core[k] !== values[i])) { remember(); keys.forEach((k, i) => { core[k] = values[i]; }); changed(); }
-      renderSettings(el.dataset.color);
+    let touched = false;
+    pickColor(el, outline ? 'Outline Color and Transparency' : 'Color and Transparency', keys.map(k => core[k]), values => {
+      if (keys.every((k, i) => core[k] === values[i])) return;
+      if (!touched) { remember(); touched = true; }
+      gesture = null; keys.forEach((k, i) => { core[k] = values[i]; }); changed();
+      $('i', el).style.setProperty('--swatch', `rgba(${values.slice(0, 3)},${values[3] / 255})`); $('span', el).textContent = hex(values);
     });
+  };
+  settings.onkeydown = e => {
+    if (!['ArrowDown', 'ArrowUp'].includes(e.key) || !e.target.matches?.('.pick[aria-expanded="false"]')) return;
+    e.preventDefault(); e.target.click();
   };
   function replace(nextCore, nextExtra = extra) {
     remember(); gesture = null; core = { ...nextCore }; extra = { ...nextExtra };

@@ -1,4 +1,4 @@
-import { $, $$, dialog } from './ui.js';
+import { $, $$, closeFloat, float } from './ui.js';
 import { bounded, clamp, fromHex, hex } from './settings.js';
 
 function toHSV([r, g, b], oldHue = 0) {
@@ -13,33 +13,33 @@ function toRGB([h, s, v]) {
     return Math.round((v - v * s * Math.max(0, Math.min(k, 4 - k, 1))) * 255);
   });
 }
-export function pickColor(label, current, apply) {
+const CHIPS = ['00FF00', '56FFAE', '54EAFF', 'FFF652', 'FF79CE', 'CF9DFF', 'FFFFFF', '000000'];
+export function pickColor(anchor, label, current, apply) {
+  if (anchor.getAttribute('aria-expanded') === 'true') return closeFloat();
   let rgba = [...current], hsv = toHSV(rgba);
-  const chips = ['00FF00', '56FFAE', '54EAFF', 'FFF652', 'FF79CE', 'CF9DFF', 'FFFFFF', '000000'];
-  const d = dialog('', label, `
-    <div class="color-work">
-      <div class="sv" id="sv" tabindex="0" role="slider" aria-label="Saturation and brightness; use arrow keys" aria-valuemin="0" aria-valuemax="100"><span></span></div>
-      <div class="color-sliders"><label>Hue<input id="hue" type="range" min="0" max="360" step="1"></label><label>Transparency<input id="opacity" type="range" min="0" max="255" step="1"></label></div>
-    </div>
-    <div class="rgba-fields">${['R', 'G', 'B', 'A'].map((s, i) => `<label>${s}<input class="entry" data-channel="${i}" type="number" min="0" max="255" step="1" required></label>`).join('')}<label class="hex-label">Hex<input class="entry" id="hex" type="text" maxlength="7" spellcheck="false" required></label></div>
-    <div class="color-samples">${chips.map(c => `<button style="--chip:#${c}" data-preset="${c}" aria-label="Use color #${c}"></button>`).join('')}</div>
-    <div class="compare"><span>Current <i id="old-color"></i></span><span>New <i id="new-color"></i></span></div>`,
-    '<button class="btn secondary" data-close>Cancel</button><button class="btn primary" id="accept-color">Accept</button>');
-  const sv = $('#sv', d), h = $('#hue', d), a = $('#opacity', d), code = $('#hex', d);
+  const d = document.createElement('div');
+  d.className = 'color-pop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', label);
+  d.innerHTML = `<div class="sv" tabindex="0" role="slider" aria-label="Saturation and brightness" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+    <input class="hue" type="range" min="0" max="360" step="1" aria-label="Hue">
+    <input class="opacity" type="range" min="0" max="255" step="1" aria-label="Transparency">
+    <div class="rgba-fields"><label>Hex<input class="entry" data-hex type="text" maxlength="7" spellcheck="false"></label>${['R', 'G', 'B', 'A'].map((s, i) => `<label>${s}<input class="entry" data-channel="${i}" type="number" min="0" max="255" step="1" required></label>`).join('')}</div>
+    <div class="color-samples">${CHIPS.map(c => `<button type="button" style="--chip:#${c}" data-preset="${c}" aria-label="#${c}"></button>`).join('')}</div>`;
+  const { close, on } = float(anchor, d, '.preview');
+  const sv = $('.sv', d), h = $('.hue', d), a = $('.opacity', d), code = $('[data-hex]', d);
   function paint(source) {
     const [H, S, V] = hsv;
     sv.style.setProperty('--hue', H);
     $('span', sv).style.cssText = `left:${S * 100}%;top:${(1 - V) * 100}%`;
     sv.setAttribute('aria-valuenow', Math.round(S * 100));
     sv.setAttribute('aria-valuetext', `${Math.round(S * 100)}% saturation, ${Math.round(V * 100)}% brightness`);
-    h.value = Math.round(H); a.value = rgba[3]; a.style.setProperty('--ink', hex(rgba));
+    if (h !== source) h.value = Math.round(H);
+    a.value = rgba[3]; a.style.setProperty('--ink', hex(rgba));
     $$('[data-channel]', d).forEach((el, i) => { if (el !== source) el.value = rgba[i]; });
     if (code !== source) code.value = hex(rgba);
-    $('#old-color', d).style.setProperty('--swatch', `rgba(${current.slice(0, 3)},${current[3] / 255})`);
-    $('#new-color', d).style.setProperty('--swatch', `rgba(${rgba.slice(0, 3)},${rgba[3] / 255})`);
-    $('#accept-color', d).disabled = !fromHex(code.value) || $$('[data-channel]', d).some(i => !i.validity.valid);
+    if (source !== null) apply(rgba);
   }
-  function fromHSV() { rgba = [...toRGB(hsv), rgba[3]]; paint(); }
+  function fromHSV(source) { rgba = [...toRGB(hsv), rgba[3]]; paint(source); }
+  function fromRGB(rgb, source) { rgba = [...rgb, rgba[3]]; hsv = toHSV(rgba, hsv[0]); paint(source); }
   function position(e) {
     const b = sv.getBoundingClientRect();
     hsv[1] = clamp((e.clientX - b.left) / b.width, 0, 1); hsv[2] = 1 - clamp((e.clientY - b.top) / b.height, 0, 1);
@@ -51,15 +51,24 @@ export function pickColor(label, current, apply) {
     const k = { ArrowLeft: [1, -1], ArrowRight: [1, 1], ArrowDown: [2, -1], ArrowUp: [2, 1] }[e.key];
     if (k) { e.preventDefault(); hsv[k[0]] = clamp(hsv[k[0]] + k[1] * (e.shiftKey ? 0.1 : 0.01), 0, 1); fromHSV(); }
   };
-  h.oninput = () => { hsv[0] = +h.value; fromHSV(); }; a.oninput = () => { rgba[3] = +a.value; paint(); };
+  h.oninput = () => { hsv[0] = +h.value; fromHSV(h); };
+  a.oninput = () => { rgba[3] = +a.value; paint(); };
   for (const el of $$('[data-channel]', d)) {
     el.oninput = () => {
-      if (el.validity.valid) { rgba[+el.dataset.channel] = bounded(+el.value, 0, 255); hsv = toHSV(rgba, hsv[0]); }
-      paint(el);
+      if (!el.validity.valid) return;
+      const i = +el.dataset.channel, v = bounded(+el.value, 0, 255);
+      if (i === 3) { rgba[3] = v; paint(el); } else fromRGB(rgba.slice(0, 3).with(i, v), el);
     };
   }
-  code.oninput = () => { const c = fromHex(code.value); if (c) { rgba = [...c, rgba[3]]; hsv = toHSV(rgba, hsv[0]); } paint(code); };
-  for (const el of $$('[data-preset]', d)) el.onclick = () => { rgba = [...fromHex(el.dataset.preset), rgba[3]]; hsv = toHSV(rgba, hsv[0]); paint(); };
-  $('#accept-color', d).onclick = () => { d.close(); apply(rgba); };
-  paint();
+  code.oninput = () => { const c = fromHex(code.value); if (c) fromRGB(c, code); };
+  for (const el of $$('[data-preset]', d)) el.onclick = () => fromRGB(fromHex(el.dataset.preset));
+  on(d, 'keydown', e => { if (e.key === 'Escape') { e.preventDefault(); close(); anchor.focus({ preventScroll: true }); } });
+  paint(null);
+  if (!matchMedia('(max-width:700px)').matches) {
+    const b = anchor.getBoundingClientRect(), view = $('.preview').getBoundingClientRect(), w = d.offsetWidth, cap = innerHeight - d.offsetHeight - 8;
+    const beside = cap < view.bottom + 6 && innerWidth - view.right >= w + 16;
+    d.style.left = `${beside ? view.right + 8 : Math.max(8, Math.min(b.right - w, innerWidth - w - 8))}px`;
+    d.style.top = `${beside ? Math.max(8, Math.min(view.top, cap)) : Math.max(8, Math.min(Math.max(b.bottom + 4, view.bottom + 6), cap))}px`;
+  }
+  sv.focus({ preventScroll: true });
 }
