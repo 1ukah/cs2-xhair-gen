@@ -1,4 +1,4 @@
-import { TIERS, drawItem, generate, odds, tierById, uniform } from './collection.js';
+import { TIERS, drawItem, favoritesFirst, generate, odds, prune, tierById, uniform } from './collection.js';
 import { decode, encode, styleName } from './settings.js';
 import { specimen } from './reticle.js';
 import { $, $$, copyText, dialog, icon, load, modal, notice, reduced, store, tone, unlockAudio } from './ui.js';
@@ -10,9 +10,10 @@ const TICKS = [...Array.from({ length: 23 }, (_, i) => Math.round(i * 62.5)), 13
 const palette = t => `--rarity:${t.color}`;
 const title = d => styleName(d.core.style);
 const offset = (index, fraction) => `translateX(${-100 * (index + fraction) / REEL.tiles}%)`;
-function tile(d) {
+const star = (d, cls) => `<button type="button" class="${cls} fav" data-fav="${d.id}" aria-pressed="${d.fav}" aria-label="Favorite">${icon('star', 17)}</button>`;
+function tile(d, picking, picked) {
   const t = tierById(d.tier);
-  return `<button type="button" class="item-card" style="${palette(t)}" data-drop="${d.id}"><span class="item-art">${specimen(d.core, 46)}</span><strong>${title(d)}</strong><span class="item-grade">${t.label}</span></button>`;
+  return `<div class="item-card${picked ? ' picked' : ''}" style="${palette(t)}"><button type="button" class="item-main" data-drop="${d.id}"${picking ? ` aria-pressed="${picked}"` : ''}><span class="item-art">${specimen(d.core, 46)}</span><strong>${title(d)}</strong><span class="item-grade">${t.label}</span></button>${star(d, 'item-fav')}</div>`;
 }
 function reelTile(d) {
   return `<div class="reel-slot"><div class="reel-card" style="${palette(tierById(d.tier))}">${d.tier === 'gold' ? icon('star', 38) : specimen(d.core, 54)}</div></div>`;
@@ -26,13 +27,18 @@ export function initCase(equip) {
   let serial = 0;
   for (const d of Array.isArray(raw?.drops) ? raw.drops.slice(0, LIMIT) : []) {
     if (!tierById(d?.tier) || typeof d.code !== 'string') continue;
-    try { drops.push({ id: ++serial, tier: d.tier, core: decode(d.code) }); } catch { }
+    try { drops.push({ id: ++serial, tier: d.tier, fav: d.fav === true, core: decode(d.code) }); } catch { }
   }
+  const view = { tier: '', picking: false, picked: new Set(), armed: false };
   let result = raw?.pending === true && drops.length ? drops[0] : null;
   let pending = false, run = null, cycle = 0, turn = 0;
   const reel = $('#reel'), track = $('.reel-track', reel), reward = $('#reward'), actions = $('#case-actions');
   const byId = id => drops.find(d => d.id === +id);
-  const persist = () => store('case', { drops: drops.map(d => ({ tier: d.tier, code: encode(d.core) })), pending });
+  const persist = () => store('case', { drops: drops.map(d => ({ tier: d.tier, code: encode(d.core), ...(d.fav && { fav: true }) })), pending });
+  function remove(list) {
+    for (const d of list) { const i = drops.indexOf(d); if (i >= 0 && !(run && i === 0)) drops.splice(i, 1); }
+    persist(); badge();
+  }
   const badge = () => { $('#inventory-count').textContent = count(drops.length); $('#inventory').setAttribute('aria-label', `Inventory, ${drops.length} drops`); };
   const openButton = `<button type="button" class="btn go" data-open>${icon('key')}Open</button>`;
   function fill(winner) {
@@ -53,25 +59,52 @@ export function initCase(equip) {
     const t = tierById(d.tier), code = encode(d.core);
     const box = dialog(t.label, title(d),
       `<div class="inspect-art" style="${palette(t)}">${specimen(d.core, 120)}</div><div class="code-row"><input class="entry code-entry" aria-label="Share code" readonly spellcheck="false" value="${code}"><button type="button" class="btn secondary compact" id="inspect-copy">${icon('copy', 15)}Copy</button></div>`,
-      `<button class="text-btn mr-auto" id="inventory-back">Back</button><button class="btn primary" id="inspect-equip">${icon('target')}Equip</button>`);
+      `<button class="text-btn mr-auto" id="inventory-back">Back</button>${star(d, 'icon-btn')}<button type="button" class="icon-btn danger" id="inspect-delete" aria-label="Delete">${icon('trash')}</button><button class="btn primary" id="inspect-equip">${icon('target')}Equip</button>`);
+    box.onclick = null;
     $('.code-entry', box).onclick = e => e.target.select();
     $('#inspect-copy', box).onclick = () => copyText(code);
     $('#inspect-equip', box).onclick = () => use(d);
     $('#inventory-back', box).onclick = inventory;
+    $('.fav', box).onclick = e => { d.fav = !d.fav; persist(); e.currentTarget.setAttribute('aria-pressed', d.fav); };
+    $('#inspect-delete', box).onclick = e => {
+      if (!e.currentTarget.classList.contains('armed')) { e.currentTarget.classList.add('armed'); return; }
+      remove([d]); inventory();
+    };
   }
   function inventory() {
-    const shown = run ? drops.slice(1) : drops;
-    const most = Math.max(1, ...TIERS.map(t => shown.filter(d => d.tier === t.id).length));
-    const recent = `<h3>Recent</h3><ul class="drop-list">${shown.slice(0, 12).map(dropRow).join('')}</ul>`;
+    const panel = modal().open ? $('.main-panel', modal()) : null, top = panel ? [panel.scrollTop, modal().scrollTop] : [0, 0];
+    const owned = run ? drops.slice(1) : drops;
+    const shown = favoritesFirst(owned.filter(d => !view.tier || d.tier === view.tier));
+    view.picked = new Set(shown.filter(d => view.picked.has(d.id)).map(d => d.id));
+    const doomed = shown.filter(d => view.picking ? view.picked.has(d.id) : !d.fav);
+    const most = Math.max(1, ...TIERS.map(t => owned.filter(d => d.tier === t.id).length));
+    const recent = `<h3>Recent</h3><ul class="drop-list">${owned.slice(0, 12).map(dropRow).join('')}</ul>`;
     const rarities = `<h3>Collection</h3>${TIERS.map(t => {
-      const have = shown.filter(d => d.tier === t.id).length;
+      const have = owned.filter(d => d.tier === t.id).length;
       return `<div class="tier-row" style="${palette(t)}"><span>${t.label}</span><b>${have}</b><span class="tier-bar"><i style="width:${have * 100 / most}%"></i></span></div>`;
     }).join('')}`;
-    const box = dialog('', 'Inventory', `<div class="item-grid inventory-grid">${shown.map(tile).join('')}</div>`, '', true, [recent, rarities]);
+    const chip = (id, label, color) => `<button type="button" class="chip" data-tier="${id}" aria-pressed="${view.tier === id}"${color ? ` style="--rarity:${color}"` : ''}>${label}</button>`;
+    const bar = `<div class="inventory-bar"><div class="chips">${chip('', 'All')}${TIERS.map(t => chip(t.id, t.label, t.color)).join('')}</div><div class="bar-actions"><button type="button" class="text-btn" data-pick aria-pressed="${view.picking}">Select</button><button type="button" class="text-btn danger${view.armed ? ' armed' : ''}" data-delete${doomed.length ? '' : ' disabled'}>${icon('trash', 16)}${view.armed ? 'Confirm' : 'Delete'} ${doomed.length || ''}</button></div></div>`;
+    const box = dialog('', 'Inventory', `${bar}<div class="item-grid inventory-grid">${shown.map(d => tile(d, view.picking, view.picked.has(d.id))).join('')}</div>`, '', true, [recent, rarities]);
+    $('.main-panel', box).scrollTop = top[0]; box.scrollTop = top[1];
     box.onclick = e => {
-      const equipBtn = e.target.closest('[data-equip]'), dropBtn = e.target.closest('[data-drop]');
-      if (equipBtn) use(byId(equipBtn.dataset.equip));
-      else if (dropBtn) inspect(byId(dropBtn.dataset.drop));
+      const hit = selector => e.target.closest(selector), armed = view.armed;
+      const target = hit('[data-equip],[data-fav],[data-tier],[data-pick],[data-delete],[data-drop]');
+      view.armed = false;
+      if (!target) { if (armed) inventory(); return; }
+      const d = byId(target.dataset.equip ?? target.dataset.fav ?? target.dataset.drop);
+      if (target.hasAttribute('data-equip')) { if (d) use(d); return; }
+      if (target.hasAttribute('data-drop') && d && !view.picking && !e.ctrlKey && !e.metaKey) return inspect(d);
+      if (target.hasAttribute('data-fav') && d) { d.fav = !d.fav; persist(); }
+      else if (target.hasAttribute('data-tier')) { view.tier = target.dataset.tier; $('.main-panel', box).scrollTop = box.scrollTop = 0; }
+      else if (target.hasAttribute('data-pick')) { view.picking = !view.picking; view.picked.clear(); }
+      else if (target.hasAttribute('data-delete')) {
+        if (armed) { remove(doomed); view.picking = false; view.picked.clear(); } else view.armed = true;
+      } else if (d) {
+        view.picking = true;
+        if (!view.picked.delete(d.id)) view.picked.add(d.id);
+      }
+      inventory();
     };
   }
   function showResult() {
@@ -92,7 +125,7 @@ export function initCase(equip) {
   function open() {
     if (run) return;
     result = { id: ++serial, ...drawItem() };
-    drops.unshift(result); if (drops.length > LIMIT) drops.length = LIMIT;
+    drops.unshift(result); prune(drops, LIMIT);
     pending = true; persist(); badge(); unlockAudio();
     run = { timers: [], animation: null };
     actions.innerHTML = `<button type="button" class="btn secondary" data-skip>Skip${icon('chevrons')}</button>`;
@@ -111,7 +144,7 @@ export function initCase(equip) {
     if (b.hasAttribute('data-equip') && result) use(result);
     if (b.hasAttribute('data-copy-drop') && result) copyText(encode(result.core));
   };
-  $('#inventory').onclick = inventory;
+  $('#inventory').onclick = () => { Object.assign(view, { tier: '', picking: false, armed: false }); view.picked.clear(); inventory(); };
   modal().addEventListener('close', () => { modal().onclick = null; });
   $('#chance-list').innerHTML = TIERS.map(t => `<div class="chance" style="${palette(t)}"><span class="chance-art" data-sample="${t.id}"></span><span class="chance-row"><span>${t.label}</span><b>${odds(t)}</b></span></div>`).join('');
   const samples = $$('[data-sample]');

@@ -1,7 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT, EXTRA_DEFAULT, configText, decode, encode, lowerBound, restoreExtras, visibleFields } from '../src/settings.js';
-import { TIERS, TOTAL, drawItem, generate, odds, randomCrosshair, tierForTicket } from '../src/collection.js';
+import { TIERS, TOTAL, drawItem, favoritesFirst, generate, odds, prune, randomCrosshair, tierForTicket } from '../src/collection.js';
+
+test('favorites sort first in drop order and survive the inventory limit', () => {
+  const list = [{ id: 1 }, { id: 2, fav: true }, { id: 3 }, { id: 4, fav: true }, { id: 5 }];
+  assert.deepEqual(favoritesFirst(list).map(d => d.id), [2, 4, 1, 3, 5]);
+  assert.deepEqual(prune([...list], 3).map(d => d.id), [1, 2, 4]);
+  assert.deepEqual(prune([{ id: 1, fav: true }, { id: 2, fav: true }], 1).map(d => d.id), [1]);
+});
 
 test('known current-format CS2 code imports and exports byte-for-byte', () => {
   const code = 'CSvbPubOq37zTGqtsPTP5QTrp5CB4xFXiKRLfzJsm49ZRe';

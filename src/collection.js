@@ -16,6 +16,14 @@ export function uniform(limit) {
   do { crypto.getRandomValues(buf); } while (buf[0] >= cutoff);
   return buf[0] % limit;
 }
+export const favoritesFirst = list => [...list.filter(d => d.fav), ...list.filter(d => !d.fav)];
+export function prune(list, limit) {
+  while (list.length > limit) {
+    const i = list.findLastIndex(d => !d.fav);
+    list.splice(i < 0 ? list.length - 1 : i, 1);
+  }
+  return list;
+}
 const pick = a => a[uniform(a.length)];
 const chance = percent => uniform(100) < percent;
 const between = (min, max) => min + uniform(max - min + 1);
