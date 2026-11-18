@@ -197,10 +197,10 @@ input[type="range"]:hover::-moz-range-thumb{background:#fff}
 .stage-art,.reward{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .stage-art{transition:filter .55s,opacity .55s,transform .6s}
 .crate{position:relative;width:82%;height:86%;max-width:560px;filter:drop-shadow(5px 14px 10px #05080966)}
-.lid{transform-origin:84% 23%}
+.lid{transform-box:view-box}
 [data-phase="unlocking"] .stage-art{transform:scale(1.09)}
 [data-phase="unlocking"] .lid{animation:unlatch 1.2s .72s both}
-@keyframes unlatch{0%{transform:none}18%{transform:translateY(-2px)}32%{transform:translateY(0)}100%{transform:translate(-9px,-15px) rotate(-5deg)}}
+@keyframes unlatch{0%{transform:none}18%{transform:translateY(-2px)}32%{transform:translateY(0)}100%{transform:translateY(-24px)}}
 [data-phase="rolling"] .stage-art{opacity:0;transform:scale(1.1)}
 [data-phase="revealed"] .stage-art{opacity:0}
 
